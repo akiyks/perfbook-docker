@@ -1,0 +1,50 @@
+FROM alpine:latest
+RUN apk -U add ghostscript ghostscript-fonts --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ --allow-untrusted && \
+    apk -U add --no-cache build-base inkscape graphviz \
+    nano vim perl curl \
+    ca-certificates libgcc bash grep sed libpng patch git \
+    coreutils ttf-liberation ttf-freefont
+WORKDIR /opt
+RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
+    tar xf fig2ps-1.5.tar.bz2 && \
+    cd fig2ps-1.5 && make install && cd .. && \
+    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
+COPY fig2dev.patch /opt/fig2dev.patch
+WORKDIR /opt
+RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.6a.tar.xz && \
+    tar xJf fig2dev-3.2.6a.tar.xz && \
+    cd fig2dev-3.2.6a && patch -p1 < /opt/fig2dev.patch && \
+    ./configure && make -j6 && make install-strip && \
+    cd /opt && rm -rf fig2dev-3.2.6a fig2dev-3.2.6a.tar.xz
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
+COPY texlive.profile /opt/texlive.profile
+WORKDIR /opt
+RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
+    tar xf install-tl-unx.tar.gz && \
+    cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
+    cd /opt && rm -rf install-tl-*
+ENV PATH=/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+RUN tlmgr install \
+    newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
+    arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
+    epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
+    glossaries glossaries-extra idxlayout mfirstuc multirow \
+    ncctools nextpage nowidow readarray siunitx splitindex tcolorbox \
+    threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
+    xfor xpatch xstring noindentafter \
+    booktabs caption etoolbox everysel fancyvrb \
+    float fontspec index latexbug listings newfloat subfig xcolor \
+    microtype setspace lineno pgf textcase listofitems \
+    multido ragged2e \
+    a2ping pdfcrop epstopdf tex-gyre tex-gyre-math times txfonts \
+    changepage environ placeins \
+    pstricks pst-node pst-eps pst-tools && \
+    rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
+    find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
+WORKDIR /opt
+RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
+    sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
+    cp latexpand-v1.3/latexpand /usr/local/bin && \
+    cd /opt && rm -rf latexpand-v1.3 latexpand-v1.3.tar.gz
+COPY steel-city-comic.regular.ttf /usr/share/fonts/TTL/steel-city-comic.regular.ttf
+RUN fc-cache -fv
