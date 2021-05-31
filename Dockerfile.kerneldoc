@@ -30,6 +30,11 @@ RUN /usr/bin/python3 -m venv sphinx_2.4.4 && \
 #    . sphinx_1.7.9/bin/activate && \
 #    pip install -r /opt/requirements-1.7.9.txt && \
 #    deactivate
+COPY requirements-latest.txt /opt/requirements-latest.txt
+RUN /usr/bin/python3 -m venv sphinx_latest && \
+    . sphinx_latest/bin/activate && \
+    pip install -r /opt/requirements-latest.txt && \
+    deactivate
 VOLUME /work
 WORKDIR /work
 CMD /bin/bash
