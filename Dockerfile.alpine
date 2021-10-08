@@ -1,7 +1,7 @@
 FROM alpine:latest
-RUN apk -U add ghostscript ghostscript-fonts --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/main/ --allow-untrusted && \
+RUN apk -U add ghostscript ghostscript-fonts --no-cache && \
     apk -U add --no-cache build-base inkscape graphviz \
-    nano vim perl curl \
+    nano vim perl curl gnuplot groff \
     ca-certificates libgcc bash grep sed libpng patch git \
     coreutils ttf-liberation ttf-freefont
 WORKDIR /opt
@@ -31,12 +31,12 @@ RUN tlmgr install \
     glossaries glossaries-extra idxlayout mfirstuc multirow \
     ncctools nextpage nowidow readarray siunitx splitindex tcolorbox \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
-    xfor xpatch xstring noindentafter \
+    xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
     float fontspec index latexbug listings newfloat subfig xcolor \
     microtype setspace lineno pgf textcase listofitems \
     multido ragged2e \
-    a2ping pdfcrop epstopdf tex-gyre tex-gyre-math times txfonts \
+    a2ping pdfcrop epstopdf tex-gyre times txfonts dejavu \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools && \
     rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
@@ -45,6 +45,22 @@ WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
     cp latexpand-v1.3/latexpand /usr/local/bin && \
-    cd /opt && rm -rf latexpand-v1.3 latexpand-v1.3.tar.gz
-COPY steel-city-comic.regular.ttf /usr/share/fonts/TTL/steel-city-comic.regular.ttf
-RUN fc-cache -fv
+    cd /opt && rm -rf latexpand-v1.3 latexpand-v1.3.tar.gz && \
+    mkdir steel-city-comic && cd steel-city-comic && \
+    curl https://www.1001fonts.com/download/steel-city-comic.zip -L -o steel-city-comic.zip && \
+    unzip steel-city-comic.zip && rm steel-city-comic.zip && \
+    mkdir -p /usr/share/fonts/local && cd /usr/share/fonts/local && \
+    ln -s /usr/local/texlive/2021/texmf-dist/fonts/truetype/public/dejavu . && \
+    ln -s /opt/steel-city-comic/scb.ttf steel-city-comic.regular.ttf && \
+    fc-cache /usr/share/fonts/local
+ARG uid=1000
+ARG gid=1000
+ARG user=perfbook
+ARG group=perfbook
+RUN if [ $uid -ne 0 ] ; then addgroup --gid $gid $group ; \
+    adduser --uid $uid --ingroup $group --disabled-password $user ; \
+    fi
+VOLUME /work
+USER $uid:$gid
+WORKDIR /work
+CMD /bin/bash
