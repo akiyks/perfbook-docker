@@ -1,29 +1,30 @@
 FROM ubuntu:focal
-RUN apt-get update && apt-get install -y locales && \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y locales && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     rm -rf /var/lib/apt/lists/*
 ENV LANG en_US.utf8
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y tzdata && \
-    rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y curl wget make nano vim git \
-    perl libfontconfig1-dev tex-common texinfo lmodern && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    curl wget make nano vim git ca-certificates \
+    perl libfontconfig1-dev tex-common texinfo lmodern fonts-liberation2 \
+    inkscape graphviz psutils unzip fonts-urw-base35 fonts-freefont-ttf \
+    equivs time && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /opt
 COPY texlive.profile texlive.profile
 RUN curl https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz -L -o - | tar xfz - && cd install-tl-* ; perl install-tl -profile /opt/texlive.profile ; cd .. ; rm -rf install-tl*
-RUN  apt-get update && apt-get install -y equivs freeglut3 && \
-     rm -rf /var/lib/apt/lists/* && \
-     mkdir /tmp/tl-equivs && cd /tmp/tl-equivs ; equivs-control texlive-local
+RUN  mkdir /tmp/tl-equivs && cd /tmp/tl-equivs ; equivs-control texlive-local
 COPY texlive-local /tmp/tl-equivs/texlive-local
 RUN cd /tmp/tl-equivs ; equivs-build texlive-local; dpkg -i texlive-local_2021.99999999-1_all.deb
-RUN apt-get update && apt-get install -y fig2ps inkscape xfig graphviz psutils && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fig2ps gnuplot-nox groff && \
     rm -rf /var/lib/apt/lists/*
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9540/ghostscript-9.54.0.tar.gz -L -o - | tar xfz - && \
-    cd /opt/ghostscript-9.54.0 && \
+RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9550/ghostscript-9.55.0.tar.gz -L -o - | tar xfz - && \
+    cd /opt/ghostscript-9.55.0 && \
     sh ./configure --enable-fontconfig && \
-    make && make install && cd /opt && rm -rf ghostscript-9.54.0
+    make -j4 && make install && cd /opt && rm -rf ghostscript-9.55.0
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
@@ -31,25 +32,32 @@ RUN tlmgr install \
     glossaries glossaries-extra idxlayout mfirstuc multirow \
     ncctools nextpage nowidow readarray siunitx splitindex tcolorbox \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
-    xfor xpatch xstring noindentafter \
+    xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
     float fontspec index latexbug listings newfloat subfig xcolor \
     microtype setspace lineno pgf textcase listofitems \
     multido ragged2e \
-    a2ping epstopdf pdfcrop tex-gyre tex-gyre-math times txfonts \
+    a2ping epstopdf pdfcrop tex-gyre times txfonts \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools
-COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
-RUN fc-cache /usr/local/share/fonts/
 WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
-    cp latexpand-v1.3/latexpand /usr/local/bin
+    cp latexpand-v1.3/latexpand /usr/local/bin && \
+    mkdir steel-city-comic && cd steel-city-comic && \
+    curl https://www.1001fonts.com/download/steel-city-comic.zip -L -o steel-city-comic.zip && \
+    unzip steel-city-comic.zip && rm steel-city-comic.zip && \
+    cd /usr/local/share/fonts && \
+    ln -s /opt/steel-city-comic/scb.ttf steel-city-comic.regular.ttf && \
+    cd /opt && fc-cache /usr/local/share/fonts
 ARG uid=1000
 ARG gid=1000
 ARG user=perfbook
 ARG group=perfbook
-RUN groupadd -g $gid $group && useradd -u $uid -g $gid -m $user
+RUN if [ $uid -ne 0 ] ; then \
+    groupadd -g $gid $group ; \
+    useradd -u $uid -g $gid -m $user ; \
+    fi
 VOLUME /work
 USER $uid:$gid
 WORKDIR /work
