@@ -33,7 +33,8 @@ Provides: chktex, biblatex, biblatex-dw, cm-super, cm-super-minimal, context,
  texlive-plain-generic,
  texlive-pstricks, texlive-pstricks-doc, texlive-publishers,
  texlive-publishers-doc, texlive-science, texlive-science-doc, texlive-xetex,
- thailatex, tipa, tipa-doc, xindy, xindy-rules, xmltex, asymptote, texinfo
-Depends: freeglut3
+ thailatex, tipa, tipa-doc, xindy, xindy-rules, xmltex, asymptote, texinfo,
+ ghostscript
+Depends: 
 Architecture: all
 Description: Subset of vanilla TeX Live 2021 for perfbook build.
