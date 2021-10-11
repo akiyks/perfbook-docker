@@ -11,12 +11,14 @@ RUN apt-get update && apt-get install -y fig2ps inkscape xfig graphviz psutils \
     make nano vim git curl ca-certificates unzip gnuplot-nox time && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /opt
+COPY fontcheck.txt /opt/fontcheck.txt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
     cp latexpand-v1.3/latexpand /usr/local/bin && \
     mkdir steel-city-comic && cd steel-city-comic && \
     curl https://www.1001fonts.com/download/steel-city-comic.zip -L -o steel-city-comic.zip && \
     unzip steel-city-comic.zip && rm steel-city-comic.zip && \
+    sha256sum -c ../fontcheck.txt | grep -q OK && \
     cp scb.ttf /usr/local/share/fonts/steel-city-comic.regular.ttf && \
     cd /opt && fc-cache /usr/local/share/fonts
 ARG uid=1000
