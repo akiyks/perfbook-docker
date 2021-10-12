@@ -19,7 +19,8 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     curl https://www.1001fonts.com/download/steel-city-comic.zip -L -o steel-city-comic.zip && \
     unzip steel-city-comic.zip && rm steel-city-comic.zip && \
     sha256sum -c ../fontcheck.txt | grep -q OK && \
-    cp scb.ttf /usr/local/share/fonts/steel-city-comic.regular.ttf && \
+    cd /usr/local/share/fonts && \
+    ln -s /opt/steel-city-comic/scb.ttf steel-city-comic.regular.ttf && \
     cd /opt && fc-cache /usr/local/share/fonts
 ARG uid=1000
 ARG gid=1000

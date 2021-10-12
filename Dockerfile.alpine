@@ -51,8 +51,8 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     curl https://www.1001fonts.com/download/steel-city-comic.zip -L -o steel-city-comic.zip && \
     unzip steel-city-comic.zip && rm steel-city-comic.zip && \
     sha256sum -c ../fontcheck.txt | grep -q OK && \
-    cp scb.ttf /usr/share/fonts/steel-city-comic.regular.ttf && \
     cd /usr/share/fonts && \
+    ln -s /opt/steel-city-comic/scb.ttf steel-city-comic.regular.ttf && \
     ln -s /usr/local/texlive/2021/texmf-dist/fonts/truetype/public/dejavu . && \
     ln -s /usr/local/texlive/2021/texmf-dist/fonts/opentype/public/nimbus15 . && \
     fc-cache -fv
