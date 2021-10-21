@@ -1,10 +1,12 @@
 FROM fedora:latest
 
 RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
-    fig2ps graphviz inkscape make git vim nano \
+    fig2ps graphviz inkscape make git vim nano gnuplot-minimal groff time \
+    liberation-mono-fonts liberation-sans-fonts \
+    dejavu-sans-mono-fonts dejavu-sans-fonts \
     texlive-epstopdf texlive-fontools \
     texlive-newtx texlive-newtxtt texlive-nimbus15 texlive-courier-scaled \
-    texlive-inconsolata texlive-newtxsf texlive-mdsymbol \
+    texlive-inconsolata texlive-newtxsf texlive-mdsymbol texlive-gnu-freefont \
     texlive-arydshln texlive-braket texlive-cleveref texlive-datatool \
     texlive-draftwatermark texlive-ellipsis texlive-enumitem \
     texlive-epigraph texlive-fmtcount texlive-fontaxes texlive-footmisc \
@@ -29,7 +31,10 @@ ARG uid=1000
 ARG gid=1000
 ARG user=perfbook
 ARG group=perfbook
-RUN groupadd -g $gid $group && useradd -u $uid -g $gid -m $user
+RUN if [ $uid -ne 0 ] ; then \
+    groupadd -g $gid $group ; \
+    useradd -u $uid -g $gid -m $user ; \
+    fi
 VOLUME /work
 USER $uid:$gid
 WORKDIR /work
