@@ -1,9 +1,9 @@
 FROM alpine:latest
-RUN apk -U add ghostscript ghostscript-fonts --no-cache && \
+RUN apk -U add ghostscript --no-cache && \
     apk -U add --no-cache build-base inkscape graphviz \
     nano vim perl curl gnuplot groff \
     ca-certificates libgcc bash grep sed libpng patch git \
-    coreutils ttf-liberation ttf-freefont
+    coreutils ttf-liberation ttf-freefont ttf-dejavu
 WORKDIR /opt
 RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
     tar xf fig2ps-1.5.tar.bz2 && \
@@ -36,7 +36,7 @@ RUN tlmgr install \
     float fontspec index latexbug listings newfloat subfig xcolor \
     microtype setspace lineno pgf textcase listofitems \
     multido ragged2e \
-    a2ping pdfcrop epstopdf tex-gyre times txfonts dejavu \
+    a2ping pdfcrop epstopdf tex-gyre times txfonts \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools && \
     rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
@@ -47,8 +47,11 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
     cp latexpand-v1.3/latexpand /usr/local/bin && \
     cd /opt && rm -rf latexpand-v1.3 latexpand-v1.3.tar.gz && \
+    curl https://github.com/ArtifexSoftware/urw-base35-fonts/archive/refs/tags/20200910.tar.gz -L -o - | tar xfz - && \
+    rm -f urw-base35-fonts-20200910/fonts/*.afm \
+    urw-base35-fonts-20200910/fonts/*.otf urw-base35-fonts-20200910/fonts/*.t1 && \
     mkdir -p /usr/share/fonts/local && cd /usr/share/fonts/local && \
-    ln -s /usr/local/texlive/2021/texmf-dist/fonts/truetype/public/dejavu . && \
+    ln -s /opt/urw-base35-fonts-20200910/fonts urw-base35 && \
     ln -s /opt/steel-city-comic.regular.ttf . && \
     fc-cache /usr/share/fonts/local
 ARG uid=1000
