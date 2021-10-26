@@ -7,7 +7,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y t
     apt-get install -y --no-install-recommends curl wget make nano vim git \
     perl libfontconfig1-dev tex-common texinfo lmodern fonts-liberation2 \
     inkscape graphviz psutils unzip fonts-urw-base35 fonts-freefont-ttf \
-    equivs time ca-certificates && \
+    equivs time ca-certificates fonts-dejavu-core && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /opt
 COPY texlive.profile texlive.profile
