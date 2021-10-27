@@ -1,19 +1,23 @@
-# To run the appimage Inkscape, the "docker run" comand needs additional
-# options:
-#     --cap-add=SYS_ADMIN --device /dev/fuse
+# Fedora 35 has pango 1.49.1 as Inkscape's dependency.
+# However, pango 1.49.1 has conflict with Inkscape as reported at
+#     https://gitlab.com/inkscape/inkscape/-/issues/2864
 #
-# Inkscape-3bf5ae0-x86_64.AppImage corresponds to 1.1.1 release.
+# For the time being, downgrade pango to 1.48.9.
 
 FROM fedora:35
 
 RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
-    fig2ps graphviz make git vim nano gnuplot-minimal groff time \
+    fig2ps graphviz inkscape make git vim nano gnuplot-minimal groff time \
     liberation-mono-fonts liberation-sans-fonts \
     dejavu-sans-mono-fonts \
     texlive-collection-plaingeneric texlive-collection-binextra \
     texlive-collection-latexextra texlive-epstopdf texlive-fontools \
     texlive-newtx texlive-newtxtt texlive-nimbus15 texlive-courier-scaled \
     texlive-inconsolata texlive-newtxsf texlive-mdsymbol texlive-gnu-freefont && \
+    cd /opt && \
+    curl https://kojipkgs.fedoraproject.org//packages/pango/1.48.9/1.fc35/x86_64/pango-1.48.9-1.fc35.x86_64.rpm -L -o pango-1.48.9-1.fc35.x86_64.rpm && \
+    dnf downgrade -y pango-1.48.9-1.fc35.x86_64.rpm && \
+    rm -f pango-1.48.9-1.fc35.x86_64.rpm && \
     dnf clean all && \
     mktexlsr
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
@@ -21,13 +25,7 @@ RUN fc-cache /usr/local/share/fonts/
 WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
-    cp latexpand-v1.3/latexpand /usr/local/bin && \
-    mkdir /opt/appimage && cd /opt/appimage && \
-    curl https://inkscape.org/gallery/item/29256/Inkscape-3bf5ae0-x86_64.AppImage -L -o Inkscape-3bf5ae0-x86_64.AppImage && \
-    chmod +x Inkscape-3bf5ae0-x86_64.AppImage && \
-    cd /usr/local/bin && \
-    ln -s /opt/appimage/Inkscape-3bf5ae0-x86_64.AppImage inkscape && \
-    cd /opt
+    cp latexpand-v1.3/latexpand /usr/local/bin
 ARG uid=1000
 ARG gid=1000
 ARG user=perfbook
