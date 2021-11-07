@@ -26,9 +26,9 @@ RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
     texlive-xpatch texlive-xstring texlive-a2ping texlive-pdfcrop \
     texlive-changepage texlive-environ texlive-placeins && \
     cd /opt && \
-    curl https://kojipkgs.fedoraproject.org//packages/pango/1.48.9/1.fc35/x86_64/pango-1.48.9-1.fc35.x86_64.rpm -L -o pango-1.48.9-1.fc35.x86_64.rpm && \
-    dnf downgrade -y pango-1.48.9-1.fc35.x86_64.rpm && \
-    rm -f pango-1.48.9-1.fc35.x86_64.rpm && \
+    curl https://kojipkgs.fedoraproject.org//packages/pango/1.48.10/1.fc34/x86_64/pango-1.48.10-1.fc34.x86_64.rpm -L -o pango-1.48.10-1.fc34.x86_64.rpm && \
+    dnf downgrade -y pango-1.48.10-1.fc34.x86_64.rpm && \
+    rm -f pango-1.48.10-1.fc34.x86_64.rpm && \
     dnf clean all && \
     mktexlsr
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
