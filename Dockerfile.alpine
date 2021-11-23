@@ -9,13 +9,12 @@ RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
     tar xf fig2ps-1.5.tar.bz2 && \
     cd fig2ps-1.5 && make install && cd .. && \
     rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
-COPY fig2dev.patch /opt/fig2dev.patch
 WORKDIR /opt
-RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.6a.tar.xz && \
-    tar xJf fig2dev-3.2.6a.tar.xz && \
-    cd fig2dev-3.2.6a && patch -p1 < /opt/fig2dev.patch && \
+RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.8b.tar.xz && \
+    tar xJf fig2dev-3.2.8b.tar.xz && \
+    cd fig2dev-3.2.8b && \
     ./configure && make -j6 && make install-strip && \
-    cd /opt && rm -rf fig2dev-3.2.6a fig2dev-3.2.6a.tar.xz
+    cd /opt && rm -rf fig2dev-3.2.8b fig2dev-3.2.8b.tar.xz
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
 COPY texlive.profile /opt/texlive.profile
 WORKDIR /opt
