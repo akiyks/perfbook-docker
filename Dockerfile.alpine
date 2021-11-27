@@ -1,7 +1,6 @@
 FROM alpine:latest
-RUN apk -U add ghostscript --no-cache && \
-    apk -U add --no-cache build-base inkscape graphviz \
-    nano vim perl curl gnuplot groff \
+RUN apk -U add --no-cache build-base inkscape graphviz ghostscript \
+    perl curl gnuplot groff \
     ca-certificates libgcc bash grep sed libpng patch git \
     coreutils ttf-liberation ttf-freefont ttf-dejavu
 WORKDIR /opt
@@ -21,7 +20,9 @@ WORKDIR /opt
 RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
     tar xf install-tl-unx.tar.gz && \
     cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
-    cd /opt && rm -rf install-tl-*
+    cd /opt && rm -rf install-tl-* && \
+    rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
+    find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
 ENV PATH=/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
