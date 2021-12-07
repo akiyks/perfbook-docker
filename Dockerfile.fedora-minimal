@@ -1,7 +1,7 @@
 FROM fedora:latest
 
 RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
-    fig2ps graphviz inkscape make git vim nano gnuplot-minimal groff time \
+    fig2ps graphviz inkscape make git gnuplot-minimal groff time \
     liberation-mono-fonts liberation-sans-fonts \
     dejavu-sans-mono-fonts dejavu-sans-fonts \
     texlive-epstopdf texlive-fontools \
