@@ -4,7 +4,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y locales && \
     rm -rf /var/lib/apt/lists/*
 ENV LANG en_US.utf8
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y tzdata && \
-    apt-get install -y --no-install-recommends curl wget make nano vim git \
+    apt-get install -y --no-install-recommends curl wget make git \
     perl libfontconfig1-dev tex-common texinfo lmodern fonts-liberation2 \
     inkscape graphviz psutils unzip fonts-urw-base35 fonts-freefont-ttf \
     equivs time ca-certificates fonts-dejavu-core && \
@@ -45,8 +45,8 @@ WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
     cp latexpand-v1.3/latexpand /usr/local/bin
-ARG uid=1000
-ARG gid=1000
+ARG uid=0
+ARG gid=0
 ARG user=perfbook
 ARG group=perfbook
 RUN if [ $uid -ne 0 ] ; then \

@@ -6,9 +6,13 @@ RUN apt-get update && apt-get install -y locales && \
 ENV LANG en_US.utf8
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y tzdata && \
     rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y fig2ps inkscape xfig graphviz psutils \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    fig2ps inkscape graphviz psutils \
     texlive-publishers texlive-pstricks texlive-science texlive-fonts-extra \
-    make nano vim git curl gnuplot-nox time && \
+    texlive-font-utils fonts-freefont-ttf lmodern fonts-liberation2 \
+    fonts-urw-base35 fonts-dejavu-core tex-gyre \
+    make curl ca-certificates git gnuplot-nox unzip time && \
     rm -rf /var/lib/apt/lists/*
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
 RUN fc-cache /usr/local/share/fonts/
@@ -28,8 +32,8 @@ RUN curl https://mirrors.ctan.org/macros/latex/contrib/cleveref.zip -L -O && unz
     texhash /usr/local/share/texmf && \
     curl https://mirrors.ctan.org/graphics/a2ping.zip -L -O && unzip a2ping.zip && \
     cp a2ping/a2ping.pl /usr/local/bin/a2ping
-ARG uid=1000
-ARG gid=1000
+ARG uid=0
+ARG gid=0
 ARG user=perfbook
 ARG group=perfbook
 RUN if [ $uid -ne 0 ] ; then \

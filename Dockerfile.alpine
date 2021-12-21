@@ -54,8 +54,8 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     ln -s /opt/urw-base35-fonts-20200910/fonts urw-base35 && \
     ln -s /opt/steel-city-comic.regular.ttf . && \
     fc-cache /usr/share/fonts/local
-ARG uid=1000
-ARG gid=1000
+ARG uid=0
+ARG gid=0
 ARG user=perfbook
 ARG group=perfbook
 RUN if [ $uid -ne 0 ] ; then addgroup --gid $gid $group ; \
