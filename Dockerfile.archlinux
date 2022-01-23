@@ -1,0 +1,30 @@
+FROM archlinux:latest
+
+RUN pacman --noconfirm -Syu && \
+    pacman --noconfirm -S perl which graphviz make git inkscape ghostscript \
+    fig2dev gnuplot groff sed grep wget \
+    ttf-dejavu ttf-liberation \
+    texlive-core texlive-latexextra texlive-bin texlive-fontsextra && \
+    rm -rf /var/cache/pacman/pkg/
+RUN pacman --noconfirm -Syu && \
+    pacman --noconfirm -S texlive-pstricks texlive-science gnu-free-fonts && \
+    rm -rf /var/cache/pacman/pkg/
+WORKDIR /opt
+RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
+    tar xf fig2ps-1.5.tar.bz2 && \
+    cd fig2ps-1.5 && make install && cd .. && \
+    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
+COPY steel-city-comic.regular.ttf /usr/local/share/fonts/steel-city-comic.regular.ttf
+RUN fc-cache /usr/local/share/fonts/
+ARG uid=0
+ARG gid=0
+ARG user=perfbook
+ARG group=perfbook
+RUN if [ $uid -ne 0 ] ; then \
+    groupadd -g $gid $group ; \
+    useradd -u $uid -g $gid -m $user ; \
+    fi
+USER $uid:$gid
+VOLUME /work
+WORKDIR /work
+CMD /bin/bash
