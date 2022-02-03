@@ -4,6 +4,9 @@ RUN apk -U add --no-cache build-base inkscape graphviz ghostscript \
     ca-certificates libgcc bash grep sed libpng patch git \
     coreutils ttf-liberation ttf-freefont ttf-dejavu
 WORKDIR /opt
+# Alternative downloads:
+# https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz
+# https://fossies.org/linux/misc/fig2dev-3.2.8b.tar.xz
 RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
     tar xf fig2ps-1.5.tar.bz2 && \
     cd fig2ps-1.5 && make install && cd .. && \
