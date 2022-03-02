@@ -18,13 +18,12 @@ RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.8b.tar.xz && \
     ./configure && make -j6 && make install-strip && \
     cd /opt && rm -rf fig2dev-3.2.8b fig2dev-3.2.8b.tar.xz
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
-COPY texlive.profile /opt/texlive.profile
+COPY texlive.alpine.profile /opt/texlive.profile
 WORKDIR /opt
 RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
     tar xf install-tl-unx.tar.gz && \
     cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
     cd /opt && rm -rf install-tl-* && \
-    rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
     find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
 ENV PATH=/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
@@ -42,7 +41,6 @@ RUN tlmgr install \
     a2ping pdfcrop epstopdf tex-gyre times txfonts \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools && \
-    rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
     find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
