@@ -7,18 +7,23 @@ RUN apk update && \
     ca-certificates libgcc bash grep sed libpng patch git \
     coreutils ttf-liberation ttf-freefont ttf-dejavu
 WORKDIR /opt
-RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
-    tar xf fig2ps-1.5.tar.bz2 && \
+# fig2ps at sourcefoge.net not working as of 2022.01.29
+# https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2
+#RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
+#    tar xf fig2ps-1.5.tar.bz2 && \
+#    cd fig2ps-1.5 && make install && cd .. && \
+#    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
+RUN wget https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz && \
+    tar xf fig2ps-1.5.tar.gz && \
     cd fig2ps-1.5 && make install && cd .. && \
-    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
+    rm -rf fig2ps-1.5 fig2ps-1.5.tar.gz
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
-COPY texlive.profile /opt/texlive.profile
+COPY texlive.alpine.profile /opt/texlive.profile
 WORKDIR /opt
 RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
     tar xf install-tl-unx.tar.gz && \
     cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
     cd /opt && rm -rf install-tl-* && \
-    rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
     find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
 ENV PATH=/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
@@ -36,7 +41,6 @@ RUN tlmgr install \
     a2ping pdfcrop epstopdf tex-gyre times txfonts \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools && \
-    rm -rf /usr/local/texlive/2021/bin/x86_64-linux && \
     find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
