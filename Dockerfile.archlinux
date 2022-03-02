@@ -10,10 +10,16 @@ RUN pacman --noconfirm -Syu && \
     pacman --noconfirm -S texlive-pstricks texlive-science gnu-free-fonts && \
     rm -rf /var/cache/pacman/pkg/
 WORKDIR /opt
-RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
-    tar xf fig2ps-1.5.tar.bz2 && \
+# fig2ps at sourcefoge.net not working as of 2022.01.29
+# https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2
+#RUN wget https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2 && \
+#    tar xf fig2ps-1.5.tar.bz2 && \
+#    cd fig2ps-1.5 && make install && cd .. && \
+#    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
+RUN wget https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz && \
+    tar xf fig2ps-1.5.tar.gz && \
     cd fig2ps-1.5 && make install && cd .. && \
-    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
+    rm -rf fig2ps-1.5 fig2ps-1.5.tar.gz
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/steel-city-comic.regular.ttf
 RUN fc-cache /usr/local/share/fonts/
 ARG uid=0
