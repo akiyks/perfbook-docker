@@ -18,11 +18,14 @@ RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
     texlive-threeparttable texlive-tocbibind texlive-titlesec texlive-upquote \
     texlive-varwidth texlive-verbatimbox texlive-was texlive-xfor \
     texlive-xpatch texlive-xstring texlive-a2ping texlive-pdfcrop \
-    texlive-changepage texlive-environ texlive-placeins && \
+    texlive-changepage texlive-environ texlive-placeins \
+    texlive-xetex texlive-realscripts texlive-lua-uni-algos && \
     dnf clean all && \
     mktexlsr
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
-RUN fc-cache /usr/local/share/fonts/
+RUN cd /usr/local/share/fonts && \
+    ln -sf /usr/share/texlive/texmf-dist/fonts/opentype/public/*/*.otf . && \
+    fc-cache /usr/local/share/fonts/
 WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
