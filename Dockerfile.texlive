@@ -38,9 +38,18 @@ RUN tlmgr install \
     multido ragged2e \
     a2ping epstopdf pdfcrop tex-gyre times txfonts \
     changepage environ placeins \
-    pstricks pst-node pst-eps pst-tools
+    pstricks pst-node pst-eps pst-tools \
+    xetex realscripts unicode-math lualatex-math \
+    stix2-otf xits libertinus-fonts tex-gyre-math
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
-RUN fc-cache /usr/local/share/fonts/
+RUN cd /etc/fonts/conf.avail/ && \
+    echo '<?xml version="1.0"?>\n\
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
+<fontconfig>\n\
+  <dir>/usr/local/texlive/2021/texmf-dist/fonts/opentype</dir>\n\
+</fontconfig>' > 09-texlive-fonts.conf && \
+    ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
+    fc-cache -sf
 WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -o - | tar xfz - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
