@@ -11,6 +11,9 @@
 #                 [--build-arg uid=1000] [--build-arg gid=1000] .
 # run example:
 #    docker run --rm -it -v <perfbook Git dir (abs)>:/work <image tag>
+#
+# Note: rel=bionic doesn't support build by xelatex and lualatex 
+#
 ARG rel=focal
 FROM ubuntu:$rel
 ARG rel
@@ -37,13 +40,13 @@ RUN if [ $REL = "bionic" ] ; then \
     curl https://mirrors.ctan.org/macros/latex/contrib/cleveref.zip -L -O && unzip cleveref.zip && \
     curl https://mirrors.ctan.org/macros/latex/contrib/epigraph.zip -L -O && unzip epigraph.zip && \
     curl https://mirrors.ctan.org/macros/latex/contrib/glossaries-extra.zip -L -O && unzip glossaries-extra.zip && \
-    cd cleveref; latex cleveref.ins; cd .. && \
+    cd cleveref && latex cleveref.ins && cd .. && \
     mkdir -p /usr/local/share/texmf/tex/latex/cleveref && \
     cp cleveref/cleveref.sty /usr/local/share/texmf/tex/latex/cleveref && \
-    cd epigraph; latex epigraph.ins; cd .. && \
+    cd epigraph && latex epigraph.ins && cd .. && \
     mkdir -p /usr/local/share/texmf/tex/latex/epigraph && \
     cp epigraph/epigraph.sty /usr/local/share/texmf/tex/latex/epigraph && \
-    cd glossaries-extra; latex glossaries-extra.ins; cd .. && \
+    cd glossaries-extra && latex glossaries-extra.ins && cd .. && \
     mkdir -p /usr/local/share/texmf/tex/latex/glossaries-extra && \
     cp glossaries-extra/*.sty /usr/local/share/texmf/tex/latex/glossaries-extra && \
     texhash /usr/local/share/texmf && \
