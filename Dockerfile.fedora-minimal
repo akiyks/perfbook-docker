@@ -19,7 +19,8 @@ RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
     texlive-varwidth texlive-verbatimbox texlive-was texlive-xfor \
     texlive-xpatch texlive-xstring texlive-a2ping texlive-pdfcrop \
     texlive-changepage texlive-environ texlive-placeins \
-    texlive-xetex texlive-realscripts texlive-lua-uni-algos texlive-stix2-otf && \
+    texlive-xetex texlive-realscripts texlive-lua-uni-algos \
+    texlive-stix2-otf texlive-xits texlive-libertinus-otf && \
     dnf clean all && \
     mktexlsr
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
