@@ -11,19 +11,23 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y t
     rm -rf /var/lib/apt/lists/*
 WORKDIR /opt
 COPY texlive.profile texlive.profile
-RUN curl https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz -L -o - | tar xfz - && cd install-tl-* ; perl install-tl -profile /opt/texlive.profile ; cd .. ; rm -rf install-tl*
+# Alternatives of tlrepo in or near JP
+#  https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
+#  https://ftp.yz.yamagata-u.ac.jp/pub/CTAN/systems/texlive/tlnet
+ARG tlrepo=https://mirror.ctan.org/systems/texlive/tlnet
+RUN curl $tlrepo/install-tl-unx.tar.gz -L -o - | tar xfz - && cd install-tl-* ; perl install-tl -profile /opt/texlive.profile -repository $tlrepo && cd .. && rm -rf install-tl*
 RUN mkdir /tmp/tl-equivs && cd /tmp/tl-equivs ; equivs-control texlive-local
 COPY texlive-local /tmp/tl-equivs/texlive-local
-RUN cd /tmp/tl-equivs ; equivs-build texlive-local; dpkg -i texlive-local_2021.99999999-1_all.deb
+RUN cd /tmp/tl-equivs ; equivs-build texlive-local; dpkg -i texlive-local_2022.99999999-1_all.deb
 RUN apt-get update && apt-get install -y --no-install-recommends \
     fig2ps gnuplot-nox groff && \
     rm -rf /var/lib/apt/lists/*
-ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2022/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9550/ghostscript-9.55.0.tar.gz -L -o - | tar xfz - && \
-    cd /opt/ghostscript-9.55.0 && \
+RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9561/ghostscript-9.56.1.tar.gz -L -o - | tar xfz - && \
+    cd /opt/ghostscript-9.56.1 && \
     sh ./configure --enable-fontconfig && \
-    make -j4 && make install && cd /opt && rm -rf ghostscript-9.55.0
+    make -j4 && make install && cd /opt && rm -rf ghostscript-9.56.1
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
@@ -46,7 +50,7 @@ RUN cd /etc/fonts/conf.avail/ && \
     echo '<?xml version="1.0"?>\n\
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
-  <dir>/usr/local/texlive/2021/texmf-dist/fonts/opentype</dir>\n\
+  <dir>/usr/local/texlive/2022/texmf-dist/fonts/opentype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache -sf

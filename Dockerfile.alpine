@@ -24,8 +24,8 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && 
     tar xf install-tl-unx.tar.gz && \
     cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
     cd /opt && rm -rf install-tl-* && \
-    find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
-ENV PATH=/usr/local/bin:/usr/local/texlive/2021/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+    find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
+ENV PATH=/usr/local/bin:/usr/local/texlive/2022/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
@@ -40,8 +40,10 @@ RUN tlmgr install \
     multido ragged2e \
     a2ping pdfcrop epstopdf tex-gyre times txfonts \
     changepage environ placeins \
-    pstricks pst-node pst-eps pst-tools && \
-    find /usr/local/texlive/2021/texmf-var/ -name "*.log" -exec rm \{\} \;
+    pstricks pst-node pst-eps pst-tools \
+    xetex realscripts unicode-math lualatex-math \
+    stix2-otf xits libertinus-fonts tex-gyre-math && \
+    find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
@@ -54,6 +56,13 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     mkdir -p /usr/share/fonts/local && cd /usr/share/fonts/local && \
     ln -s /opt/urw-base35-fonts-20200910/fonts urw-base35 && \
     ln -s /opt/steel-city-comic.regular.ttf . && \
+    cd /etc/fonts/conf.avail/ && \
+    echo $'<?xml version="1.0"?>\n\
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
+<fontconfig>\n\
+  <dir>/usr/local/texlive/2022/texmf-dist/fonts/opentype</dir>\n\
+</fontconfig>' > 09-texlive-fonts.conf && \
+    ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache /usr/share/fonts/local
 ARG uid=0
 ARG gid=0
