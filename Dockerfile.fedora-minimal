@@ -1,7 +1,10 @@
-FROM fedora:latest
+ARG rel=latest
+FROM fedora:$rel
 
-RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
-    fig2ps graphviz inkscape make git gnuplot-minimal groff time \
+RUN dnf -y update && \
+    dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
+    fig2ps graphviz inkscape make git gnuplot-minimal groff time findutils \
+    diffutils \
     liberation-mono-fonts liberation-sans-fonts \
     dejavu-sans-mono-fonts dejavu-sans-fonts \
     texlive-epstopdf texlive-fontools \
@@ -21,6 +24,7 @@ RUN dnf -y update && dnf install -y --setopt=tsflags=nodocs \
     texlive-changepage texlive-environ texlive-placeins \
     texlive-xetex texlive-realscripts texlive-lua-uni-algos \
     texlive-stix2-otf texlive-xits texlive-libertinus-otf && \
+    dnf install -y --setopt=tsflags=nodocs latexmk && \
     dnf clean all && \
     mktexlsr
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
