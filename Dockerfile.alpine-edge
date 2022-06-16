@@ -31,7 +31,7 @@ RUN tlmgr install \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
     glossaries glossaries-extra idxlayout mfirstuc multirow \
-    ncctools nextpage nowidow readarray siunitx splitindex tcolorbox \
+    ncctools nextpage nowidow parnotes readarray siunitx splitindex tcolorbox \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \

@@ -16,7 +16,7 @@ RUN dnf -y update && \
     texlive-footnotebackref texlive-fvextra texlive-glossaries \
     texlive-glossaries-extra texlive-idxlayout texlive-mfirstuc \
     texlive-multirow texlive-ncctools texlive-nextpage texlive-nowidow \
-    texlive-listofitems texlive-noindentafter \
+    texlive-listofitems texlive-noindentafter texlive-parnotes \
     texlive-readarray texlive-siunitx texlive-splitindex texlive-tcolorbox \
     texlive-threeparttable texlive-tocbibind texlive-titlesec texlive-upquote \
     texlive-varwidth texlive-verbatimbox texlive-was texlive-xfor \

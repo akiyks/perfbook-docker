@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:latest
 RUN apt-get update && apt-get upgrade -y && apt-get install -y locales && \
     localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
     rm -rf /var/lib/apt/lists/*
@@ -33,7 +33,7 @@ RUN tlmgr install \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
     glossaries glossaries-extra idxlayout mfirstuc multirow \
-    ncctools nextpage nowidow readarray siunitx splitindex tcolorbox \
+    ncctools nextpage nowidow parnotes readarray siunitx splitindex tcolorbox \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
