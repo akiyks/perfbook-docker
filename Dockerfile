@@ -14,7 +14,7 @@
 #
 # Note: rel=bionic doesn't support build by xelatex and lualatex 
 #
-ARG rel=focal
+ARG rel=latest
 FROM ubuntu:$rel
 ARG rel
 ENV REL $rel
