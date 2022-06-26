@@ -1,14 +1,10 @@
-# Ubuntu based container for building perfbook.
-# build ARGs:
+# Ubuntu based container for building perfbook (for rootless mode).
+# build ARG:
 #    rel: Ubuntu release, default: "focal"
-#    uid: Your user id for root mode container, default: 0 (rootless container)
-#    gid: Your group id for root mode container, default: 0 (rootless container)
-#    user: user name, default: "perfbook"
-#    group: group name, default: "perfbook"
 #
 # build example:
-#    docker build -t <image tag> [--build-arg rel=<release tag>] \
-#                 [--build-arg uid=1000] [--build-arg gid=1000] .
+#    docker build -t <image tag> [--build-arg rel=<release tag>] .
+#
 # run example:
 #    docker run --rm -it -v <perfbook Git dir (abs)>:/work <image tag>
 #
@@ -62,15 +58,6 @@ RUN if [ $REL = "bionic" ] ; then \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
     cp latexpand-v1.3/latexpand /usr/local/bin ; \
     fi
-ARG uid=0
-ARG gid=0
-ARG user=perfbook
-ARG group=perfbook
-RUN if [ $uid -ne 0 ] ; then \
-    groupadd -g $gid $group ; \
-    useradd -u $uid -g $gid -m $user ; \
-    fi
 VOLUME /work
-USER $uid:$gid
 WORKDIR /work
 CMD /bin/bash

@@ -1,0 +1,11 @@
+ARG repo=local/perfbook-build
+ARG tag=alpine
+FROM $repo:$tag
+ARG uid=1000
+ARG gid=1000
+ARG user=perfbook
+ARG group=perfbook
+RUN if [ $uid -ne 0 ] ; then addgroup --gid $gid $group ; \
+    adduser --uid $uid --ingroup $group --disabled-password $user ; \
+    fi
+USER $uid:$gid

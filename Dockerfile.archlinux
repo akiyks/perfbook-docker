@@ -21,15 +21,6 @@ RUN wget https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz && \
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/steel-city-comic.regular.ttf
 RUN ln -sf /usr/share/fontconfig/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache -sf
-ARG uid=0
-ARG gid=0
-ARG user=perfbook
-ARG group=perfbook
-RUN if [ $uid -ne 0 ] ; then \
-    groupadd -g $gid $group && \
-    useradd -u $uid -g $gid -m $user ; \
-    fi
-USER $uid:$gid
 VOLUME /work
 WORKDIR /work
 CMD /bin/bash

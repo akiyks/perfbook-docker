@@ -1,0 +1,13 @@
+ARG repo=local/perfbook-build
+ARG tag=rootless
+FROM $repo:$tag
+ARG uid=1000
+ARG gid=1000
+ARG user=perfbook
+ARG group=perfbook
+RUN if [ $uid -ne 0 ] ; then \
+    groupadd -g $gid $group && \
+    useradd -u $uid -g $gid -m $user ; \
+    fi
+USER $uid:$gid
+CMD /bin/bash
