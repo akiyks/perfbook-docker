@@ -1,6 +1,6 @@
 # Ubuntu based container for building perfbook (for rootless mode).
 # build ARG:
-#    rel: Ubuntu release, default: "focal"
+#    rel: Ubuntu release, default is "latest", means latest LTS.
 #
 # build example:
 #    docker build -t <image tag> [--build-arg rel=<release tag>] .
