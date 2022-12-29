@@ -15,8 +15,11 @@ FROM ubuntu:$rel
 ARG rel
 ENV REL $rel
 RUN apt-get update \
+ && apt-get upgrade -y \
+ && apt-get autoremove -y \
  && apt-get install -y locales \
  && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 ENV LANG en_US.utf8
 RUN apt-get update \
@@ -49,6 +52,7 @@ RUN apt-get update \
       latexmk \
       texlive-xetex \
       texlive-luatex \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
 RUN mkdir -p /etc/fonts/conf.avail && cd /etc/fonts/conf.avail \
@@ -76,6 +80,20 @@ RUN if [ $REL = "bionic" ] ; then \
  &&   cd glossaries-extra && latex glossaries-extra.ins && cd .. \
  &&   mkdir -p /usr/local/share/texmf/tex/latex/glossaries-extra \
  &&   cp glossaries-extra/*.sty /usr/local/share/texmf/tex/latex/glossaries-extra \
+ &&   cd /usr/local/share/texmf/tex/latex/glossaries-extra \
+ &&     mv glossaries-extra.sty glossaries-extra-latest.sty \
+ &&     mv glossaries-extra-bib2gls.sty glossaries-extra-bib2gls-latest.sty \
+ &&     mv glossaries-extra-stylemods.sty glossaries-extra-stylemods-latest.sty \
+ &&     mv glossary-bookindex.sty glossary-bookindex-latest.sty \
+ &&     mv glossary-longextra.sty glossary-longextra-latest.sty \
+ &&     mv glossary-topic.sty glossary-topic-latest.sty \
+ &&     ln -s glossaries-extra-2021-11-22.sty glossaries-extra.sty \
+ &&     ln -s glossaries-extra-bib2gls-2021-11-22.sty glossaries-extra-bib2gls.sty \
+ &&     ln -s glossaries-extra-stylemods-2021-11-22.sty glossaries-extra-stylemods.sty \
+ &&     ln -s glossary-bookindex-2021-11-22.sty glossary-bookindex.sty \
+ &&     ln -s glossary-longextra-2021-11-22.sty glossary-longextra.sty \
+ &&     ln -s glossary-topic-2021-11-22.sty glossary-topic.sty \
+ &&   cd /opt \
  &&   texhash /usr/local/share/texmf \
  &&   curl https://mirrors.ctan.org/graphics/a2ping.zip -L -O \
  &&   unzip a2ping.zip \
