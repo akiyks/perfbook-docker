@@ -1,13 +1,27 @@
+# Update, and for uid != 0 add sudo
+# default is uid == 0, and only does update
 ARG repo=local/perfbook-build
 ARG tag=rootless
 FROM $repo:$tag
-ARG uid=1000
-ARG gid=1000
+ARG uid=0
+ARG gid=0
 ARG user=perfbook
 ARG group=perfbook
+# Do updates on top
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && apt-get autoremove -y \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+# Add uid:gid setting and sudo for root mode docker
 RUN if [ $uid -ne 0 ] ; then \
-    groupadd -g $gid $group && \
-    useradd -u $uid -g $gid -m $user ; \
-    fi
+      apt-get update \
+ &&   apt-get install -y --no-install-recommends \
+        sudo \
+ &&   apt-get clean \
+ &&   rm -rf /var/lib/apt/lists/* \
+ &&   groupadd -g $gid $group \
+ &&   useradd -u $uid -g $gid -m $user \
+ &&   echo "$user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-container-user \
+ ;  fi
 USER $uid:$gid
-CMD /bin/bash
