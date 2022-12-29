@@ -1,0 +1,39 @@
+SHELL = /bin/bash
+DOCKER_CMD := $(shell which docker 2>/dev/null)
+PODMAN_CMD := $(shell which podman 2>/dev/null)
+
+ifneq ($(DOCKER_CMD),)
+  DOCKER = docker
+else ifneq ($(PODMAN_CMD),)
+  DOCKER = podman
+endif
+
+ifneq ($(DOCKER),)
+  ROOTLESS_MODE := $(shell $(DOCKER) info 2>/dev/null | grep -c rootless)
+endif
+
+ifeq ($(ROOTLESS_MODE),0)
+  DEFAULT_TARGET = uid
+else
+  DEFAULT_TARGET = rootless
+endif
+
+REPO ?= local/perfbook-build
+UID := $(shell id -u)
+GID := $(shell id -g)
+
+.PHONY: all rootless uid
+
+all: $(DEFAULT_TARGET)
+
+rootless: TAG=rl
+rootless:
+	@$(DOCKER) build -t $(REPO):$(TAG) .
+
+uid: TAG=rl
+uid: TAG_UID=uid$(UID)
+uid: rootless
+	$(DOCKER) build -t $(REPO):$(TAG_UID) \
+	--build-arg repo=$(REPO) --build-arg tag=$(TAG) \
+	--build-arg uid=$(UID) --build-arg gid=$(GID) \
+	-f Dockerfile.uid .
