@@ -46,6 +46,8 @@ RUN apt-get update \
       git \
       curl \
       ca-certificates \
+      gnupg \
+      coreutils \
       gnuplot-nox \
       unzip \
       time \
@@ -80,6 +82,8 @@ RUN if [ $REL = "bionic" ] ; then \
  &&   cd glossaries-extra && latex glossaries-extra.ins && cd .. \
  &&   mkdir -p /usr/local/share/texmf/tex/latex/glossaries-extra \
  &&   cp glossaries-extra/*.sty /usr/local/share/texmf/tex/latex/glossaries-extra \
+ &&   rm *.zip \
+ &&   rm -rf cleveref/ epigraph/ glossaries-extra/ \
  &&   cd /usr/local/share/texmf/tex/latex/glossaries-extra \
  &&     mv glossaries-extra.sty glossaries-extra-latest.sty \
  &&     mv glossaries-extra-bib2gls.sty glossaries-extra-bib2gls-latest.sty \
@@ -99,9 +103,14 @@ RUN if [ $REL = "bionic" ] ; then \
  &&   unzip a2ping.zip \
  &&   cp a2ping/a2ping.pl /usr/local/bin/a2ping \
  ;  else \
-      curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - \
+      curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -O \
+ &&   sha512sum latexpand-v1.3.tar.gz > CHECKSUM \
+ &&   echo "2e8030b478a6ea03979cec0e03ca0845f67bc7df607b2eaa58660a35e4216747be21e2a01b8700dffd244a2d5265f08eef60b65c0dbc7fcf5123ba773fb1903d  latexpand-v1.3.tar.gz" > CHECKSUM_EXPECTED \
+ &&   cmp CHECKSUM CHECKSUM_EXPECTED \
+ &&   tar xfz latexpand-v1.3.tar.gz \
  &&   sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand \
  &&   cp latexpand-v1.3/latexpand /usr/local/bin \
+ &&   rm latexpand-v1.3.tar.gz CHECKSUM* \
  ;  fi
 WORKDIR /work
 CMD /bin/bash
