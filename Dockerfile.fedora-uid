@@ -1,0 +1,22 @@
+# Update, and for uid != 0 add sudo
+# default is uid == 0, and only does update
+ARG repo=local/perfbook-build
+ARG tag=fedora
+FROM $repo:$tag
+ARG uid=0
+ARG gid=0
+ARG user=perfbook
+ARG group=perfbook
+RUN dnf update -y \
+ && dnf clean all
+# Add uid:gid setting and sudo for root mode docker
+RUN if [ $uid -ne 0 ] ; then \
+      dnf update -y \
+ &&   dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
+        sudo \
+ &&   dnf clean all \
+ &&   groupadd -g $gid $group \
+ &&   useradd -u $uid -g $gid -m $user \
+ &&   echo "$user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/90-container-user \
+ ;  fi
+USER $uid:$gid

@@ -25,8 +25,11 @@ GID := $(shell id -g)
 TAG ?= rootless
 TAG_UID ?= uid$(UID)
 TAG_UPD ?= update
+TAG_FEDORA ?= fedora
+TAG_FEDORA_UID ?= fedora-uid$(UID)
+TAG_FEDORA_UPD ?= fedora-upd
 
-.PHONY: all rootless uid prereq update
+.PHONY: all rootless uid prereq update fedora fedora-uid fedora-update
 
 all: $(DEFAULT_TARGET)
 
@@ -48,3 +51,18 @@ update: prereq rootless
 	$(DOCKER) build -t $(REPO):$(TAG_UPD) \
 	--build-arg repo=$(REPO) --build-arg tag=$(TAG) \
 	-f Dockerfile.uid .
+
+fedora: prereq
+	@$(DOCKER) build -t $(REPO):$(TAG_FEDORA) \
+	-f Dockerfile.fedora-minimal .
+
+fedora-uid: prereq fedora
+	@$(DOCKER) build -t $(REPO):$(TAG_FEDORA_UID) \
+	--build-arg repo=$(REPO) --build-arg tag=$(TAG_FEDORA) \
+	--build-arg uid=$(UID) --build-arg gid=$(GID) \
+	-f Dockerfile.fedora-uid .
+
+fedora-update: prereq fedora
+	@$(DOCKER) build -t $(REPO):$(TAG_FEDORA_UPD) \
+	--build-arg repo=$(REPO) --build-arg tag=$(TAG_FEDORA) \
+	-f Dockerfile.fedora-uid .
