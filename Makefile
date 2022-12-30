@@ -22,18 +22,29 @@ REPO ?= local/perfbook-build
 UID := $(shell id -u)
 GID := $(shell id -g)
 
-.PHONY: all rootless uid
+TAG ?= rootless
+TAG_UID ?= uid$(UID)
+TAG_UPD ?= update
+
+.PHONY: all rootless uid prereq update
 
 all: $(DEFAULT_TARGET)
 
-rootless: TAG=rl
-rootless:
+prereq:
+ifeq ($(DOCKER),)
+	$(error Please install docker or podman.)
+endif
+
+rootless: prereq
 	@$(DOCKER) build -t $(REPO):$(TAG) .
 
-uid: TAG=rl
-uid: TAG_UID=uid$(UID)
-uid: rootless
+uid: prereq rootless
 	$(DOCKER) build -t $(REPO):$(TAG_UID) \
 	--build-arg repo=$(REPO) --build-arg tag=$(TAG) \
 	--build-arg uid=$(UID) --build-arg gid=$(GID) \
+	-f Dockerfile.uid .
+
+update: prereq rootless
+	$(DOCKER) build -t $(REPO):$(TAG_UPD) \
+	--build-arg repo=$(REPO) --build-arg tag=$(TAG) \
 	-f Dockerfile.uid .
