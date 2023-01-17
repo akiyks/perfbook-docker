@@ -48,6 +48,7 @@ RUN dnf -y update \
       texlive-ncctools \
       texlive-nextpage \
       texlive-nowidow \
+      texlive-libertine \
       texlive-listofitems \
       texlive-noindentafter \
       texlive-parnotes \
