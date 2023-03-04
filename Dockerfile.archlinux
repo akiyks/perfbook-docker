@@ -15,7 +15,6 @@ RUN pacman --noconfirm -Syu \
     sed \
     grep \
     wget \
-    ttf-dejavu \
     ttf-liberation \
     texlive-core \
     texlive-latexextra \
@@ -23,7 +22,6 @@ RUN pacman --noconfirm -Syu \
     texlive-fontsextra \
     texlive-pstricks \
     texlive-science \
-    gnu-free-fonts \
  && rm -rf /var/cache/pacman/pkg/
 WORKDIR /opt
 # fig2ps at sourcefoge.net not working as of 2022.01.29
