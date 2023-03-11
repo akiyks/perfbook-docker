@@ -1,7 +1,7 @@
 FROM alpine:latest
 RUN apk -U add --no-cache build-base inkscape graphviz ghostscript \
     perl curl gnuplot groff \
-    ca-certificates libgcc bash grep sed libpng patch git \
+    ca-certificates libgcc bash grep libpng patch git gnupg \
     coreutils ttf-liberation ttf-freefont ttf-dejavu
 WORKDIR /opt
 # Alternative downloads:
@@ -20,28 +20,40 @@ RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.8b.tar.xz && \
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
 COPY texlive.alpine.profile /opt/texlive.profile
 WORKDIR /opt
-RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
-    tar xf install-tl-unx.tar.gz && \
-    cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
-    cd /opt && rm -rf install-tl-* && \
-    find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
+# redirect from https://mirror.ctan.org/systems/texlive/tlnet is unstable
+# https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
+# https://ftp.yz.yamagata-u.ac.jp/pub/CTAN/systems/texlive/tlnet
+ARG tlrepo=https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
+RUN curl $tlrepo/install-tl-unx.tar.gz -L -o install-tl-unx.tar.gz \
+ && curl https://tug.org/texlive/files/texlive.asc -L -o texlive.asc \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512 -L -o install-tl-unx.tar.gz.sha512 \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512.asc -L -o install-tl-unx.tar.gz.sha512.asc \
+ && gpg --import texlive.asc \
+ && gpg --verify install-tl-unx.tar.gz.sha512.asc \
+ && sha512sum install-tl-unx.tar.gz > CHECKSUM \
+ && cmp install-tl-unx.tar.gz.sha512 CHECKSUM \
+ && tar xf install-tl-unx.tar.gz \
+ && cd  install-tl-* && perl install-tl -profile /opt/texlive.profile \
+ && cd /opt && rm -rf install-tl-* \
+ && find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
 ENV PATH=/usr/local/bin:/usr/local/texlive/2022/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
-    glossaries glossaries-extra idxlayout mfirstuc multirow \
-    ncctools nextpage nowidow parnotes readarray siunitx splitindex tcolorbox \
+    gensymb glossaries glossaries-extra idxlayout mfirstuc multirow \
+    ncctools nextpage nowidow parnotes pdfcol \
+    readarray siunitx splitindex tcolorbox tikzfill \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
     float fontspec index latexbug listings newfloat subfig xcolor \
     microtype setspace lineno pgf textcase listofitems \
     multido ragged2e \
-    a2ping pdfcrop epstopdf tex-gyre times txfonts \
+    a2ping pdfcrop epstopdf tex-gyre times txfonts libertine \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools \
-    xetex realscripts unicode-math lualatex-math \
+    xetex realscripts unicode-math lualatex-math luacolor \
     stix2-otf xits libertinus-fonts tex-gyre-math && \
     find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
@@ -61,6 +73,7 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
   <dir>/usr/local/texlive/2022/texmf-dist/fonts/opentype</dir>\n\
+  <dir>/usr/local/texlive/2022/texmf-dist/fonts/truetype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache /usr/share/fonts/local
