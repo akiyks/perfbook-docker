@@ -27,6 +27,7 @@ RUN dnf -y update \
       texlive-newtxsf \
       texlive-mdsymbol \
       texlive-tex-gyre \
+      texlive-txfonts \
       texlive-gnu-freefont \
       texlive-arydshln \
       texlive-braket \
