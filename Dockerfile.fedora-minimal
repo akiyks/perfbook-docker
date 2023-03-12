@@ -26,6 +26,7 @@ RUN dnf -y update \
       texlive-inconsolata \
       texlive-newtxsf \
       texlive-mdsymbol \
+      texlive-tex-gyre \
       texlive-gnu-freefont \
       texlive-arydshln \
       texlive-braket \
@@ -39,6 +40,7 @@ RUN dnf -y update \
       texlive-fontaxes \
       texlive-footmisc \
       texlive-footnotebackref \
+      texlive-forloop \
       texlive-fvextra \
       texlive-glossaries \
       texlive-glossaries-extra \
@@ -73,6 +75,7 @@ RUN dnf -y update \
       texlive-placeins \
       texlive-xetex \
       texlive-realscripts \
+      texlive-luacolor \
       texlive-lua-uni-algos \
       texlive-stix2-otf \
       texlive-xits \
@@ -80,6 +83,14 @@ RUN dnf -y update \
  && dnf install -y --setopt=tsflags=nodocs latexmk \
  && dnf clean all \
  && mktexlsr
+# f38 and later need texlive-gensymb as well
+RUN if grep -q "Fedora Linux 38" /etc/os-release ; then \
+      dnf update -y \
+ &&   dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
+        texlive-gensymb \
+ &&   dnf clean all \
+ &&   mktexlsr ; \
+    fi
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
 RUN mkdir -p /etc/fonts/conf.avail \
  && cd /etc/fonts/conf.avail \
@@ -87,6 +98,7 @@ RUN mkdir -p /etc/fonts/conf.avail \
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
   <dir>/usr/share/texlive/texmf-dist/fonts/opentype</dir>\n\
+  <dir>/usr/share/texlive/texmf-dist/fonts/truetype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ \
  && fc-cache -sf
