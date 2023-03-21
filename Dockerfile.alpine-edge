@@ -27,12 +27,13 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && 
     find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
 ENV PATH=/usr/local/bin:/usr/local/texlive/2022/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
-    newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
+    newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf libertine \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
     glossaries glossaries-extra idxlayout mfirstuc multirow \
     ncctools nextpage nowidow parnotes readarray siunitx splitindex tcolorbox \
-    threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
+    pdfcol luacolor tikzfill \
+    threeparttable tocbibind titlesec upquote varwidth verbatimbox was gensymb \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
     float fontspec index latexbug listings newfloat subfig xcolor \
