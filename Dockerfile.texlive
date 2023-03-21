@@ -1,39 +1,92 @@
-FROM ubuntu:latest
-RUN apt-get update && apt-get upgrade -y && apt-get install -y locales && \
-    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
-    rm -rf /var/lib/apt/lists/*
-ENV LANG en_US.utf8
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y tzdata && \
-    apt-get install -y --no-install-recommends curl wget make git \
-    perl libfontconfig1-dev tex-common texinfo lmodern fonts-liberation2 \
-    inkscape graphviz psutils unzip fonts-urw-base35 fonts-freefont-ttf \
-    equivs time ca-certificates fonts-dejavu-core && \
-    rm -rf /var/lib/apt/lists/*
+ARG distro=ubuntu
+ARG rel=latest
+FROM $distro:$rel
+ENV LANG C.UTF-8
+RUN apt-get update \
+ && apt-get upgrade -y \
+ && apt-get autoremove -y \
+ && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y tzdata \
+ && apt-get install -y --no-install-recommends \
+      curl \
+      wget \
+      make \
+      git \
+      gnupg \
+      coreutils \
+      perl \
+      libfontconfig1-dev \
+      tex-common \
+      texinfo \
+      lmodern \
+      fonts-liberation2 \
+      fig2dev \
+      inkscape \
+      graphviz \
+      psutils \
+      unzip \
+      fonts-urw-base35 \
+      fonts-freefont-ttf \
+      equivs \
+      time \
+      ca-certificates \
+      fonts-dejavu-core \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 WORKDIR /opt
 COPY texlive.profile texlive.profile
+#  https://mirror.ctan.org/systems/texlive/tlnet
 # Alternatives of tlrepo in or near JP
 #  https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
 #  https://ftp.yz.yamagata-u.ac.jp/pub/CTAN/systems/texlive/tlnet
-ARG tlrepo=https://mirror.ctan.org/systems/texlive/tlnet
-RUN curl $tlrepo/install-tl-unx.tar.gz -L -o - | tar xfz - && cd install-tl-* ; perl install-tl -profile /opt/texlive.profile -repository $tlrepo && cd .. && rm -rf install-tl*
-RUN mkdir /tmp/tl-equivs && cd /tmp/tl-equivs ; equivs-control texlive-local
+ARG tlrepo=https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
+RUN curl $tlrepo/install-tl-unx.tar.gz -L -o install-tl-unx.tar.gz \
+ && curl https://tug.org/texlive/files/texlive.asc -L -o texlive.asc \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512 -L -o install-tl-unx.tar.gz.sha512 \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512.asc -L -o install-tl-unx.tar.gz.sha512.asc \
+ && gpg --import texlive.asc \
+ && gpg --verify install-tl-unx.tar.gz.sha512.asc \
+ && sha512sum install-tl-unx.tar.gz > CHECKSUM \
+ && cmp install-tl-unx.tar.gz.sha512 CHECKSUM \
+ && tar xfz install-tl-unx.tar.gz \
+ && cd install-tl-* \
+ && perl install-tl -profile /opt/texlive.profile -repository $tlrepo \
+ && cd .. \
+ && rm -rf install-tl* CHECKSUM
+RUN mkdir /tmp/tl-equivs \
+ && cd /tmp/tl-equivs \
+ &&   equivs-control texlive-local
 COPY texlive-local /tmp/tl-equivs/texlive-local
-RUN cd /tmp/tl-equivs ; equivs-build texlive-local; dpkg -i texlive-local_2022.99999999-1_all.deb
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    fig2ps gnuplot-nox groff && \
-    rm -rf /var/lib/apt/lists/*
-ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2022/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
+RUN cd /tmp/tl-equivs \
+ && equivs-build texlive-local \
+ && dpkg -i texlive-local_2023.99999999-1_all.deb
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      gnuplot-nox \
+      groff \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs9561/ghostscript-9.56.1.tar.gz -L -o - | tar xfz - && \
-    cd /opt/ghostscript-9.56.1 && \
-    sh ./configure --enable-fontconfig && \
-    make -j4 && make install && cd /opt && rm -rf ghostscript-9.56.1
+RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs1000/ghostscript-10.0.0.tar.gz -L -o ghostscript-10.0.0.tar.gz \
+ && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs1000/SHA512SUMS -L -o SHA512SUMS \
+ && grep -F "ghostscript-10.0.0.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
+ && sha512sum ghostscript-10.0.0.tar.gz > CHECKSUM \
+ && cmp SHA512SUMS-MATCH CHECKSUM \
+ && tar xfz ghostscript-10.0.0.tar.gz \
+ && cd /opt/ghostscript-10.0.0 \
+ &&   sh ./configure --enable-fontconfig \
+ &&   make -j4 \
+ &&   make install \
+ && cd /opt \
+ && rm -rf ghostscript-10.0.0* CHECKSUM SHA512*
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
+    libertine \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
-    glossaries glossaries-extra idxlayout mfirstuc multirow \
-    ncctools nextpage nowidow parnotes readarray siunitx splitindex tcolorbox \
+    gensymb glossaries glossaries-extra idxlayout mfirstuc multirow \
+    ncctools nextpage nowidow parnotes pdfcol \
+    readarray siunitx splitindex tcolorbox tikzfill \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
@@ -43,21 +96,20 @@ RUN tlmgr install \
     a2ping epstopdf pdfcrop tex-gyre times txfonts \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools \
-    xetex realscripts unicode-math lualatex-math \
+    xetex realscripts unicode-math lualatex-math luacolor \
     stix2-otf xits libertinus-fonts tex-gyre-math
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
-RUN cd /etc/fonts/conf.avail/ && \
-    echo '<?xml version="1.0"?>\n\
-<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
-<fontconfig>\n\
-  <dir>/usr/local/texlive/2022/texmf-dist/fonts/opentype</dir>\n\
-</fontconfig>' > 09-texlive-fonts.conf && \
-    ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
-    fc-cache -sf
+RUN cd /etc/fonts/conf.d/ \
+ && ln -sf /usr/local/texlive/2023/texmf-var/fonts/conf/texlive-fontconfig.conf 09-texlive-fonts.conf \
+ && fc-cache -sf
 WORKDIR /opt
-RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -o - | tar xfz - && \
-    sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
-    cp latexpand-v1.3/latexpand /usr/local/bin
-VOLUME /work
+RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -o latexpand-v1.3.tar.gz \
+ && sha512sum latexpand-v1.3.tar.gz > CHECKSUM \
+ && echo "2e8030b478a6ea03979cec0e03ca0845f67bc7df607b2eaa58660a35e4216747be21e2a01b8700dffd244a2d5265f08eef60b65c0dbc7fcf5123ba773fb1903d  latexpand-v1.3.tar.gz" > CHECKSUM_EXPECTED \
+ && cmp CHECKSUM CHECKSUM_EXPECTED \
+ && tar xfz latexpand-v1.3.tar.gz \
+ && sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand \
+ && cp latexpand-v1.3/latexpand /usr/local/bin \
+ && rm latexpand-v1.3.tar.gz CHECKSUM*
 WORKDIR /work
 CMD /bin/bash
