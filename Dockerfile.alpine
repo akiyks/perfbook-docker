@@ -1,10 +1,27 @@
 FROM alpine:latest
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-RUN apk -U add --no-cache build-base inkscape graphviz ghostscript \
-    perl curl gnuplot groff \
-    ca-certificates libgcc bash grep libpng patch git gnupg \
-    coreutils ttf-liberation ttf-freefont ttf-dejavu
+RUN apk -U add --no-cache \
+      build-base \
+      inkscape \
+      graphviz \
+      ghostscript \
+      perl \
+      curl \
+      gnuplot \
+      groff \
+      ca-certificates \
+      libgcc \
+      bash \
+      grep \
+      libpng \
+      patch \
+      git \
+      gnupg \
+      coreutils \
+      ttf-liberation \
+      ttf-freefont \
+      ttf-dejavu
 WORKDIR /opt
 # Alternative downloads:
 # https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz
@@ -14,11 +31,14 @@ WORKDIR /opt
 #    cd fig2ps-1.5 && make install && cd .. && \
 #    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
 WORKDIR /opt
-RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.8b.tar.xz && \
-    tar xJf fig2dev-3.2.8b.tar.xz && \
-    cd fig2dev-3.2.8b && \
-    ./configure && make -j6 && make install-strip && \
-    cd /opt && rm -rf fig2dev-3.2.8b fig2dev-3.2.8b.tar.xz
+RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.8b.tar.xz \
+ && tar xJf fig2dev-3.2.8b.tar.xz \
+ && cd fig2dev-3.2.8b \
+ &&   ./configure \
+ &&   make -j6 \
+ &&   make install-strip \
+ && cd .. \
+ && rm -rf fig2dev-3.2.8b fig2dev-3.2.8b.tar.xz
 ENV TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1
 ENV NOPERLDOC=1
 COPY texlive.alpine.profile /opt/texlive.profile
@@ -27,10 +47,10 @@ WORKDIR /opt
 # https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
 # https://ftp.yz.yamagata-u.ac.jp/pub/CTAN/systems/texlive/tlnet
 ARG tlrepo=https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
-RUN curl $tlrepo/install-tl-unx.tar.gz -L -o install-tl-unx.tar.gz \
- && curl https://tug.org/texlive/files/texlive.asc -L -o texlive.asc \
- && curl $tlrepo/install-tl-unx.tar.gz.sha512 -L -o install-tl-unx.tar.gz.sha512 \
- && curl $tlrepo/install-tl-unx.tar.gz.sha512.asc -L -o install-tl-unx.tar.gz.sha512.asc \
+RUN curl $tlrepo/install-tl-unx.tar.gz -L -O \
+ && curl https://tug.org/texlive/files/texlive.asc -L -O \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512 -L -O \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512.asc -L -O \
  && gpg --import texlive.asc \
  && gpg --verify install-tl-unx.tar.gz.sha512.asc \
  && sha512sum install-tl-unx.tar.gz > CHECKSUM \
@@ -41,23 +61,99 @@ RUN curl $tlrepo/install-tl-unx.tar.gz -L -o install-tl-unx.tar.gz \
  && find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
 ENV PATH=/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
-    newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
-    arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
-    epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
-    gensymb glossaries glossaries-extra idxlayout mfirstuc multirow \
-    ncctools nextpage nowidow parnotes pdfcol \
-    readarray siunitx splitindex tcolorbox tikzfill \
-    threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
-    xfor xpatch xstring noindentafter forloop \
-    booktabs caption etoolbox everysel fancyvrb \
-    float fontspec index latexbug listings newfloat subfig xcolor \
-    microtype setspace lineno pgf textcase listofitems \
-    multido ragged2e \
-    a2ping pdfcrop epstopdf tex-gyre times txfonts libertine \
-    changepage environ placeins \
-    pstricks pst-node pst-eps pst-tools \
-    xetex realscripts unicode-math lualatex-math luacolor \
-    stix2-otf xits libertinus-fonts tex-gyre-math \
+      newtx \
+      newtxtt \
+      nimbus15 \
+      courier \
+      courier-scaled \
+      inconsolata \
+      newtxsf \
+      mdsymbol \
+      arydshln \
+      braket \
+      cleveref \
+      datatool \
+      draftwatermark \
+      ellipsis \
+      enumitem \
+      epigraph \
+      fmtcount \
+      fontaxes \
+      footmisc \
+      footnotebackref \
+      fvextra \
+      gensymb \
+      glossaries \
+      glossaries-extra \
+      idxlayout \
+      mfirstuc \
+      multirow \
+      ncctools \
+      nextpage \
+      nowidow \
+      parnotes \
+      pdfcol \
+      readarray \
+      siunitx \
+      splitindex \
+      tcolorbox \
+      tikzfill \
+      threeparttable \
+      tocbibind \
+      titlesec \
+      upquote \
+      varwidth \
+      verbatimbox \
+      was \
+      xfor \
+      xpatch \
+      xstring \
+      noindentafter \
+      forloop \
+      booktabs \
+      caption \
+      etoolbox \
+      everysel \
+      fancyvrb \
+      float \
+      fontspec \
+      index \
+      latexbug \
+      listings \
+      newfloat \
+      subfig \
+      xcolor \
+      microtype \
+      setspace \
+      lineno \
+      pgf \
+      textcase \
+      listofitems \
+      multido \
+      ragged2e \
+      a2ping \
+      pdfcrop \
+      epstopdf \
+      tex-gyre \
+      times \
+      txfonts \
+      libertine \
+      changepage \
+      environ \
+      placeins \
+      pstricks \
+      pst-node \
+      pst-eps \
+      pst-tools \
+      xetex \
+      realscripts \
+      unicode-math \
+      lualatex-math \
+      luacolor \
+      stix2-otf \
+      xits \
+      libertinus-fonts
+      tex-gyre-math \
  && find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
