@@ -2,26 +2,26 @@ FROM alpine:latest
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
 RUN apk -U add --no-cache \
-      build-base \
-      inkscape \
-      graphviz \
-      ghostscript \
-      perl \
-      curl \
-      gnuplot \
-      groff \
-      ca-certificates \
-      libgcc \
       bash \
-      grep \
-      libpng \
-      patch \
+      build-base \
+      ca-certificates \
+      coreutils \
+      curl \
+      ghostscript \
       git \
       gnupg \
-      coreutils \
-      ttf-liberation \
+      gnuplot \
+      graphviz \
+      grep \
+      groff \
+      inkscape \
+      libgcc \
+      libpng \
+      patch \
+      perl \
+      ttf-dejavu \
       ttf-freefont \
-      ttf-dejavu
+      ttf-liberation
 WORKDIR /opt
 # Alternative downloads:
 # https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz
@@ -61,99 +61,99 @@ RUN curl $tlrepo/install-tl-unx.tar.gz -L -O \
  && find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
 ENV PATH=/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
-      newtx \
-      newtxtt \
-      nimbus15 \
+      a2ping \
+      arydshln \
+      booktabs \
+      braket \
+      caption \
+      changepage \
+      cleveref \
       courier \
       courier-scaled \
-      inconsolata \
-      newtxsf \
-      mdsymbol \
-      arydshln \
-      braket \
-      cleveref \
       datatool \
       draftwatermark \
       ellipsis \
       enumitem \
+      environ \
       epigraph \
+      epstopdf \
+      etoolbox \
+      everysel \
+      fancyvrb \
+      float \
       fmtcount \
       fontaxes \
       footmisc \
       footnotebackref \
+      fontspec \
+      forloop \
       fvextra \
       gensymb \
       glossaries \
       glossaries-extra \
       idxlayout \
+      inconsolata \
+      index \
+      latexbug \
+      libertine \
+      libertinus-fonts \
+      lineno \
+      listings \
+      listofitems \
+      luacolor \
+      lualatex-math \
+      mdsymbol \
       mfirstuc \
+      microtype \
+      multido \
       multirow \
       ncctools \
+      newfloat \
+      newtx \
+      newtxsf \
+      newtxtt \
       nextpage \
+      nimbus15 \
+      noindentafter \
       nowidow \
       parnotes \
       pdfcol \
+      pdfcrop \
+      pgf \
+      placeins \
+      pstricks \
+      pst-eps \
+      pst-node \
+      pst-tools \
+      ragged2e \
       readarray \
+      realscripts \
+      setspace \
       siunitx \
       splitindex \
+      stix2-otf \
+      subfig \
       tcolorbox \
-      tikzfill \
+      textcase \
+      tex-gyre \
+      tex-gyre-math \
       threeparttable \
-      tocbibind \
+      tikzfill \
+      times \
       titlesec \
+      tocbibind \
+      txfonts \
+      unicode-math \
       upquote \
       varwidth \
       verbatimbox \
       was \
+      xcolor \
+      xetex \
       xfor \
+      xits \
       xpatch \
       xstring \
-      noindentafter \
-      forloop \
-      booktabs \
-      caption \
-      etoolbox \
-      everysel \
-      fancyvrb \
-      float \
-      fontspec \
-      index \
-      latexbug \
-      listings \
-      newfloat \
-      subfig \
-      xcolor \
-      microtype \
-      setspace \
-      lineno \
-      pgf \
-      textcase \
-      listofitems \
-      multido \
-      ragged2e \
-      a2ping \
-      pdfcrop \
-      epstopdf \
-      tex-gyre \
-      times \
-      txfonts \
-      libertine \
-      changepage \
-      environ \
-      placeins \
-      pstricks \
-      pst-node \
-      pst-eps \
-      pst-tools \
-      xetex \
-      realscripts \
-      unicode-math \
-      lualatex-math \
-      luacolor \
-      stix2-otf \
-      xits \
-      libertinus-fonts
-      tex-gyre-math \
  && find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
