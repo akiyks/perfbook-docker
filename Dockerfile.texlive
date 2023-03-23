@@ -15,9 +15,6 @@ RUN apt-get update \
       coreutils \
       perl \
       libfontconfig1-dev \
-      tex-common \
-      texinfo \
-      lmodern \
       fonts-liberation2 \
       fig2dev \
       inkscape \
@@ -25,7 +22,7 @@ RUN apt-get update \
       psutils \
       unzip \
       fonts-urw-base35 \
-      fonts-freefont-ttf \
+      fonts-freefont-otf \
       equivs \
       time \
       ca-certificates \
