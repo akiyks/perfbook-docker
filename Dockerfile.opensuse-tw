@@ -1,0 +1,107 @@
+ARG rel=tumbleweed
+FROM opensuse/$rel
+RUN zypper refresh \
+ && zypper install -y --no-recommends \
+      perl \
+      shadow \
+      graphviz \
+      inkscape \
+      make \
+      gcc \
+      git \
+      gnuplot \
+      groff \
+      time \
+      fontconfig \
+      curl \
+      wget \
+      unzip \
+      which \
+      ghostscript \
+      transfig \
+      tar \
+      gzip \
+      bzip2 \
+      xz \
+      liberation-fonts \
+      dejavu-fonts \
+      texlive-a2ping \
+      texlive-epstopdf \
+      texlive-fontools \
+      texlive-collection-latexrecommended \
+      texlive-arydshln \
+      texlive-braket \
+      texlive-cleveref \
+      texlive-csquotes \
+      texlive-datatool \
+      texlive-draftwatermark \
+      texlive-ellipsis \
+      texlive-enumitem \
+      texlive-epigraph \
+      texlive-fmtcount \
+      texlive-fontaxes \
+      texlive-footmisc \
+      texlive-footnotebackref \
+      texlive-fvextra \
+      texlive-glossaries \
+      texlive-glossaries-extra \
+      texlive-idxlayout \
+      texlive-mfirstuc \
+      texlive-multirow \
+      texlive-ncctools \
+      texlive-nextpage \
+      texlive-nowidow \
+      texlive-listofitems \
+      texlive-noindentafter \
+      texlive-parnotes \
+      texlive-readarray \
+      texlive-siunitx \
+      texlive-splitindex \
+      texlive-tcolorbox \
+      texlive-threeparttable \
+      texlive-tocbibind \
+      texlive-titlesec \
+      texlive-upquote \
+      texlive-varwidth \
+      texlive-verbatimbox \
+      texlive-was \
+      texlive-xfor \
+      texlive-xpatch \
+      texlive-xstring \
+      texlive-a2ping \
+      texlive-pdfcrop \
+      texlive-changepage \
+      texlive-environ \
+      texlive-placeins \
+      texlive-collection-fontsrecommended \
+      texlive-collection-fontutils \
+      texlive-newtx \
+      texlive-newtxtt \
+      texlive-nimbus15 \
+      texlive-courier-scaled \
+      texlive-inconsolata \
+      texlive-newtxsf \
+      texlive-gnu-freefont \
+      texlive-dejavu \
+      texlive-pstricks \
+      texlive-pst-tools \
+      texlive-xetex \
+      texlive-realscripts \
+      texlive-lua-uni-algos \
+      texlive-stix2-otf \
+      texlive-xits \
+      texlive-libertinus-fonts \
+ && zypper clean --all
+COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
+RUN fc-cache /usr/local/share/fonts/
+WORKDIR /opt
+RUN wget https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz \
+ && sha512sum latexpand-v1.3.tar.gz > CHECKSUM \
+ && echo "2e8030b478a6ea03979cec0e03ca0845f67bc7df607b2eaa58660a35e4216747be21e2a01b8700dffd244a2d5265f08eef60b65c0dbc7fcf5123ba773fb1903d  latexpand-v1.3.tar.gz" > CHECKSUM_EXPECTED \
+ && cmp CHECKSUM CHECKSUM_EXPECTED \
+ && tar xfz latexpand-v1.3.tar.gz \
+ && sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand \
+ && cp latexpand-v1.3/latexpand /usr/local/bin \
+ && rm latexpand-v1.3.tar.gz CHECKSUM*
+WORKDIR /work
+CMD /bin/bash
