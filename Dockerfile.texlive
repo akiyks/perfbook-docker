@@ -83,7 +83,7 @@ RUN tlmgr install \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
     gensymb glossaries glossaries-extra idxlayout mfirstuc multirow \
     ncctools nextpage nowidow parnotes pdfcol \
-    readarray siunitx splitindex tcolorbox tikzfill \
+    readarray silence siunitx splitindex tcolorbox tikzfill \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \

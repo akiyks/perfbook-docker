@@ -129,6 +129,7 @@ RUN tlmgr install \
       readarray \
       realscripts \
       setspace \
+      silence \
       siunitx \
       splitindex \
       stix2-otf \

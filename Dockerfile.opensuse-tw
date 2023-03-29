@@ -55,6 +55,7 @@ RUN zypper refresh \
       texlive-noindentafter \
       texlive-parnotes \
       texlive-readarray \
+      texlive-silence \
       texlive-siunitx \
       texlive-splitindex \
       texlive-tcolorbox \
