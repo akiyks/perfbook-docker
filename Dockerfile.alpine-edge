@@ -1,4 +1,6 @@
 FROM alpine:edge
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8 
 RUN apk update && \
     echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
@@ -13,26 +15,26 @@ WORKDIR /opt
 #    tar xf fig2ps-1.5.tar.bz2 && \
 #    cd fig2ps-1.5 && make install && cd .. && \
 #    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
-RUN wget https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz && \
-    tar xf fig2ps-1.5.tar.gz && \
-    cd fig2ps-1.5 && make install && cd .. && \
-    rm -rf fig2ps-1.5 fig2ps-1.5.tar.gz
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
+#RUN wget https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz && \
+#    tar xf fig2ps-1.5.tar.gz && \
+#    cd fig2ps-1.5 && make install && cd .. && \
+#    rm -rf fig2ps-1.5 fig2ps-1.5.tar.gz
+ENV TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1 NOPERLDOC=1
 COPY texlive.alpine.profile /opt/texlive.profile
 WORKDIR /opt
 RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && \
     tar xf install-tl-unx.tar.gz && \
     cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
     cd /opt && rm -rf install-tl-* && \
-    find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
-ENV PATH=/usr/local/bin:/usr/local/texlive/2022/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+    find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
+ENV PATH=/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf libertine \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
     glossaries glossaries-extra idxlayout mfirstuc multirow \
     ncctools nextpage nowidow parnotes readarray siunitx splitindex tcolorbox \
-    pdfcol luacolor tikzfill \
+    pdfcol luacolor tikzfill silence \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was gensymb \
     xfor xpatch xstring noindentafter forloop \
     booktabs caption etoolbox everysel fancyvrb \
@@ -44,13 +46,13 @@ RUN tlmgr install \
     pstricks pst-node pst-eps pst-tools \
     xetex realscripts unicode-math lualatex-math \
     stix2-otf xits libertinus-fonts tex-gyre-math && \
-    find /usr/local/texlive/2022/texmf-var/ -name "*.log" -exec rm \{\} +
+    find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
-    sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-v1.3/latexpand && \
-    cp latexpand-v1.3/latexpand /usr/local/bin && \
-    cd /opt && rm -rf latexpand-v1.3 latexpand-v1.3.tar.gz && \
+    sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand && \
+    cp latexpand-*/latexpand /usr/local/bin && \
+    cd /opt && rm -rf latexpand-* && \
     curl https://github.com/ArtifexSoftware/urw-base35-fonts/archive/refs/tags/20200910.tar.gz -L -o - | tar xfz - && \
     rm -f urw-base35-fonts-20200910/fonts/*.afm \
     urw-base35-fonts-20200910/fonts/*.otf urw-base35-fonts-20200910/fonts/*.t1 && \
@@ -61,7 +63,7 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     echo $'<?xml version="1.0"?>\n\
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
-  <dir>/usr/local/texlive/2022/texmf-dist/fonts/opentype</dir>\n\
+  <dir>/usr/local/texlive/2023/texmf-dist/fonts/opentype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache -sf
