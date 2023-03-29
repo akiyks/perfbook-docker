@@ -85,11 +85,12 @@ RUN dnf -y update \
  && dnf install -y --setopt=tsflags=nodocs latexmk \
  && dnf clean all \
  && mktexlsr
-# f38 and later need texlive-gensymb as well
-RUN if grep -q "Fedora Linux 38" /etc/os-release ; then \
+# f38 and later need texlive-gensymb and texlive-tikzfill as well
+RUN if grep -q -e 'Fedora Linux 3[89]' /etc/os-release ; then \
       dnf update -y \
  &&   dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
         texlive-gensymb \
+        texlive-tikzfill \
  &&   dnf clean all \
  &&   mktexlsr ; \
     fi
