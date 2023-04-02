@@ -3,7 +3,7 @@ FROM fedora:$rel
 
 RUN dnf -y update \
  && dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
-      fig2ps \
+      transfig \
       graphviz \
       inkscape \
       make \
@@ -17,6 +17,8 @@ RUN dnf -y update \
       liberation-sans-fonts \
       dejavu-sans-mono-fonts \
       dejavu-sans-fonts \
+      texlive-collection-latexrecommended \
+      texlive-dvips \
       texlive-epstopdf \
       texlive-fontools \
       texlive-newtx \
