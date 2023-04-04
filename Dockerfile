@@ -54,6 +54,8 @@ RUN apt-get update \
       latexmk \
       texlive-xetex \
       texlive-luatex \
+      file \
+      poppler-utils \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
