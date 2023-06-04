@@ -5,7 +5,7 @@ RUN apk update && \
     echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
     apk -U add --no-cache make inkscape graphviz ghostscript \
-    perl curl gnuplot groff fig2dev \
+    perl curl gnuplot groff fig2dev poppler-utils \
     ca-certificates bash grep sed libpng patch git \
     coreutils ttf-liberation ttf-freefont ttf-dejavu
 WORKDIR /opt
