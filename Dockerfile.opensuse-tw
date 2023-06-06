@@ -2,6 +2,7 @@ ARG rel=tumbleweed
 FROM opensuse/$rel
 RUN zypper refresh \
  && zypper install -y --no-recommends \
+      util-linux \
       perl \
       shadow \
       graphviz \
@@ -23,6 +24,7 @@ RUN zypper refresh \
       gzip \
       bzip2 \
       xz \
+      poppler-tools \
       liberation-fonts \
       dejavu-fonts \
       texlive-a2ping \
@@ -43,6 +45,7 @@ RUN zypper refresh \
       texlive-footmisc \
       texlive-footnotebackref \
       texlive-fvextra \
+      texlive-gensymb \
       texlive-glossaries \
       texlive-glossaries-extra \
       texlive-idxlayout \
@@ -61,6 +64,7 @@ RUN zypper refresh \
       texlive-tcolorbox \
       texlive-threeparttable \
       texlive-tocbibind \
+      texlive-tikzfill \
       texlive-titlesec \
       texlive-upquote \
       texlive-varwidth \
