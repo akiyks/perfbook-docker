@@ -10,7 +10,7 @@ RUN apk update && \
     apk -U add --no-cache make rsvg-convert graphviz ghostscript \
     perl curl gnuplot groff fig2dev poppler-utils \
     ca-certificates bash grep sed libpng patch git \
-    coreutils ttf-liberation ttf-freefont ttf-dejavu
+    coreutils ttf-liberation ttf-dejavu
 WORKDIR /opt
 # fig2ps at sourcefoge.net not working as of 2022.01.29
 # https://sourceforge.net/projects/fig2ps/files/fig2ps-1.5.tar.bz2
@@ -48,6 +48,7 @@ RUN tlmgr install \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools \
     xetex realscripts unicode-math lualatex-math \
+    gnu-freefont \
     stix2-otf xits libertinus-fonts tex-gyre-math && \
     find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
@@ -66,6 +67,7 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     echo $'<?xml version="1.0"?>\n\
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
+  <dir>/usr/local/texlive/2023/texmf-dist/fonts/truetype</dir>\n\
   <dir>/usr/local/texlive/2023/texmf-dist/fonts/opentype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
