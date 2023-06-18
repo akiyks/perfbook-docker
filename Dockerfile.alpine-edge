@@ -1,10 +1,13 @@
 FROM alpine:edge
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8 
+# Install rsvg-convert in place of inkscape
+# (inkscape crashes with some of SVG files)
+# Need recent WIP branch at https://github.com/akiyks/perfbook.git.
 RUN apk update && \
     echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk update && \
-    apk -U add --no-cache make inkscape graphviz ghostscript \
+    apk -U add --no-cache make rsvg-convert graphviz ghostscript \
     perl curl gnuplot groff fig2dev poppler-utils \
     ca-certificates bash grep sed libpng patch git \
     coreutils ttf-liberation ttf-freefont ttf-dejavu
