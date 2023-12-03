@@ -17,7 +17,7 @@ RUN apt-get update \
       libfontconfig1-dev \
       fonts-liberation2 \
       fig2dev \
-      inkscape \
+      librsvg2-bin \
       graphviz \
       psutils \
       unzip \
@@ -64,18 +64,18 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10011/ghostscript-10.01.1.tar.gz -L -O \
- && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10011/SHA512SUMS -L -O \
- && grep -F "ghostscript-10.01.1.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
- && sha512sum ghostscript-10.01.1.tar.gz > CHECKSUM \
+RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10021/ghostscript-10.02.1.tar.gz -L -O \
+ && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10021/SHA512SUMS -L -O \
+ && grep -F "ghostscript-10.02.1.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
+ && sha512sum ghostscript-10.02.1.tar.gz > CHECKSUM \
  && cmp SHA512SUMS-MATCH CHECKSUM \
- && tar xfz ghostscript-10.01.1.tar.gz \
- && cd /opt/ghostscript-10.01.1 \
+ && tar xfz ghostscript-10.02.1.tar.gz \
+ && cd /opt/ghostscript-10.02.1 \
  &&   sh ./configure --enable-fontconfig \
  &&   make -j4 \
  &&   make install \
  && cd /opt \
- && rm -rf ghostscript-10.01.1* CHECKSUM SHA512*
+ && rm -rf ghostscript-10.02.1* CHECKSUM SHA512*
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
     libertine \
