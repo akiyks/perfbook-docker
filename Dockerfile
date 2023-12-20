@@ -28,6 +28,7 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       fig2ps \
       inkscape \
+      librsvg2-bin \
       graphviz \
       psutils \
       texlive-publishers \
