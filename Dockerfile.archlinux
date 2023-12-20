@@ -7,6 +7,7 @@ RUN pacman --noconfirm -Syu \
     make \
     git \
     inkscape \
+    librsvg \
     ghostscript \
     fig2dev \
     gnuplot \
@@ -17,12 +18,19 @@ RUN pacman --noconfirm -Syu \
     texlive-core \
     texlive-latexextra \
     texlive-bin \
+    texlive-binextra \
     texlive-fontsextra \
     texlive-pstricks \
     texlive-science \
     texlive-pictures \
+    texlive-fontutils \
     wget \
     unzip \
+ && rm -rf /var/cache/pacman/pkg/
+RUN pacman --noconfirm -Syu \
+ && pacman --noconfirm -S \
+    texlive-luatex \
+    texlive-xetex \
  && rm -rf /var/cache/pacman/pkg/
 WORKDIR /opt
 # TeX Live 2023 on Arch Linux has a noisy version of tcolorbox. Upgrade it.
