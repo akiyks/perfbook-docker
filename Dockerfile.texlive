@@ -64,18 +64,20 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10021/ghostscript-10.02.1.tar.gz -L -O \
- && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10021/SHA512SUMS -L -O \
- && grep -F "ghostscript-10.02.1.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
- && sha512sum ghostscript-10.02.1.tar.gz > CHECKSUM \
+ARG gsrevision=10.02.1
+ARG gssubdir=gs10021
+RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$gssubdir/ghostscript-$gsrevision.tar.gz -L -O \
+ && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$gssubdir/SHA512SUMS -L -O \
+ && grep -F "ghostscript-$gsrevision.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
+ && sha512sum ghostscript-$gsrevision.tar.gz > CHECKSUM \
  && cmp SHA512SUMS-MATCH CHECKSUM \
- && tar xfz ghostscript-10.02.1.tar.gz \
- && cd /opt/ghostscript-10.02.1 \
+ && tar xfz ghostscript-$gsrevision.tar.gz \
+ && cd /opt/ghostscript-$gsrevision \
  &&   sh ./configure --enable-fontconfig \
  &&   make -j4 \
  &&   make install \
  && cd /opt \
- && rm -rf ghostscript-10.02.1* CHECKSUM SHA512*
+ && rm -rf ghostscript-$gsrevision.tar.gz ghostscript-$gsrevision/ CHECKSUM SHA512*
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
     libertine \
