@@ -6,6 +6,7 @@ RUN dnf -y update \
       transfig \
       graphviz \
       inkscape \
+      librsvg2-tools \
       make \
       git \
       gnuplot-minimal \
