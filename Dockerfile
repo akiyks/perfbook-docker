@@ -41,6 +41,7 @@ RUN apt-get update \
       fonts-liberation2 \
       fonts-urw-base35 \
       fonts-dejavu-core \
+      fonts-linuxlibertine \
       tex-gyre \
       fonts-texgyre \
       make \
