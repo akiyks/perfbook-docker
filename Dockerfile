@@ -14,15 +14,10 @@ ARG rel=latest
 FROM ubuntu:$rel
 ARG rel
 ENV REL $rel
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 RUN apt-get update \
  && apt-get upgrade -y \
  && apt-get autoremove -y \
- && apt-get install -y locales \
- && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-ENV LANG en_US.utf8
-RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive TZ=UTC apt-get install -y \
       tzdata \
  && apt-get install -y --no-install-recommends \
@@ -61,13 +56,12 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
-RUN mkdir -p /etc/fonts/conf.avail && cd /etc/fonts/conf.avail \
+RUN cd /etc/fonts/conf.d/ \
  && echo '<?xml version="1.0"?>\n\
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
   <dir>/usr/share/texlive/texmf-dist/fonts/opentype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf \
- && ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ \
  && fc-cache -sf
 WORKDIR /opt
 RUN if [ $REL = "bionic" ] ; then \
