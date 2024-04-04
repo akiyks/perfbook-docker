@@ -14,15 +14,15 @@ RUN apk -U add --no-cache \
       graphviz \
       grep \
       groff \
-      inkscape \
       libgcc \
       libpng \
       patch \
       perl \
+      rsvg-convert \
       ttf-dejavu \
       ttf-freefont \
       ttf-liberation
-WORKDIR /opt
+#WORKDIR /opt
 # Alternative downloads:
 # https://fossies.org/linux/privat/old/fig2ps-1.5.tar.gz
 # https://fossies.org/linux/misc/fig2dev-3.2.8b.tar.xz
@@ -58,8 +58,8 @@ RUN curl $tlrepo/install-tl-unx.tar.gz -L -O \
  && tar xf install-tl-unx.tar.gz \
  && cd  install-tl-* && perl install-tl -profile /opt/texlive.profile \
  && cd /opt && rm -rf install-tl-* \
- && find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
-ENV PATH=/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+ && find /usr/local/texlive/2024/texmf-var/ -name "*.log" -exec rm \{\} +
+ENV PATH=/usr/local/bin:/usr/local/texlive/2024/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
       a2ping \
       arydshln \
@@ -155,7 +155,7 @@ RUN tlmgr install \
       xits \
       xpatch \
       xstring \
- && find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
+ && find /usr/local/texlive/2024/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - \
@@ -175,8 +175,8 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
  && echo $'<?xml version="1.0"?>\n\
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
-  <dir>/usr/local/texlive/2023/texmf-dist/fonts/opentype</dir>\n\
-  <dir>/usr/local/texlive/2023/texmf-dist/fonts/truetype</dir>\n\
+  <dir>/usr/local/texlive/2024/texmf-dist/fonts/opentype</dir>\n\
+  <dir>/usr/local/texlive/2024/texmf-dist/fonts/truetype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf \
  && ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ \
  && fc-cache /usr/share/fonts/local

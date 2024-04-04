@@ -3,10 +3,10 @@ Priority: optional
 Standards-Version: 4.1.4
 
 Package: texlive-local
-Version: 2023.99999999-1
+Version: 2024.99999999-1
 Maintainer: Akira Yokosawa <akiyks@gmail.com>
 Provides: chktex, biblatex, biblatex-dw, cm-super, cm-super-minimal, context, 
- dvidvi, dvipng, feynmf, fragmaster, jadetex, lacheck, latex-beamer, 
+ dvidvi, dvipng, dvisvgm, feynmf, fragmaster, jadetex, lacheck, latex-beamer, 
  latex-cjk-all, latex-cjk-chinese, latex-cjk-chinese-arphic-bkai00mp, 
  latex-cjk-chinese-arphic-bsmi00lp, latex-cjk-chinese-arphic-gbsn00lp, 
  latex-cjk-chinese-arphic-gkai00mp, latex-cjk-common, latex-cjk-japanese, 
@@ -37,4 +37,4 @@ Provides: chktex, biblatex, biblatex-dw, cm-super, cm-super-minimal, context,
  ghostscript
 Depends:
 Architecture: all
-Description: Subset of vanilla TeX Live 2023 for perfbook build.
+Description: Subset of vanilla TeX Live 2024 for perfbook build.

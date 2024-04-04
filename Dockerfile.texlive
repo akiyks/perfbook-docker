@@ -55,17 +55,17 @@ RUN mkdir /tmp/tl-equivs \
 COPY texlive-local /tmp/tl-equivs/texlive-local
 RUN cd /tmp/tl-equivs \
  && equivs-build texlive-local \
- && dpkg -i texlive-local_2023.99999999-1_all.deb
+ && dpkg -i texlive-local_2024.99999999-1_all.deb
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       gnuplot-nox \
       groff \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
-ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2024/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-ARG gsrevision=10.02.1
-ARG gssubdir=gs10021
+ARG gsrevision=10.03.0
+ARG gssubdir=gs10030
 RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$gssubdir/ghostscript-$gsrevision.tar.gz -L -O \
  && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$gssubdir/SHA512SUMS -L -O \
  && grep -F "ghostscript-$gsrevision.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
@@ -99,7 +99,7 @@ RUN tlmgr install \
     stix2-otf xits libertinus-fonts tex-gyre-math
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
 RUN cd /etc/fonts/conf.d/ \
- && ln -sf /usr/local/texlive/2023/texmf-var/fonts/conf/texlive-fontconfig.conf 09-texlive-fonts.conf \
+ && ln -sf /usr/local/texlive/2024/texmf-var/fonts/conf/texlive-fontconfig.conf 09-texlive-fonts.conf \
  && fc-cache -sf
 WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -O \

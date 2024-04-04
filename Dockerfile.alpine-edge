@@ -29,8 +29,8 @@ RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz && 
     tar xf install-tl-unx.tar.gz && \
     cd  install-tl-* && perl install-tl -profile /opt/texlive.profile && \
     cd /opt && rm -rf install-tl-* && \
-    find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
-ENV PATH=/usr/local/bin:/usr/local/texlive/2023/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+    find /usr/local/texlive/2024/texmf-var/ -name "*.log" -exec rm \{\} +
+ENV PATH=/usr/local/bin:/usr/local/texlive/2024/bin/x86_64-linuxmusl:/usr/local/sbin:/usr/sbin:/usr/bin:/sbin:/bin
 RUN tlmgr install \
     newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf libertine \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
@@ -50,7 +50,7 @@ RUN tlmgr install \
     xetex realscripts unicode-math lualatex-math \
     gnu-freefont \
     stix2-otf xits libertinus-fonts tex-gyre-math && \
-    find /usr/local/texlive/2023/texmf-var/ -name "*.log" -exec rm \{\} +
+    find /usr/local/texlive/2024/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
@@ -67,8 +67,8 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
     echo $'<?xml version="1.0"?>\n\
 <!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
 <fontconfig>\n\
-  <dir>/usr/local/texlive/2023/texmf-dist/fonts/truetype</dir>\n\
-  <dir>/usr/local/texlive/2023/texmf-dist/fonts/opentype</dir>\n\
+  <dir>/usr/local/texlive/2024/texmf-dist/fonts/truetype</dir>\n\
+  <dir>/usr/local/texlive/2024/texmf-dist/fonts/opentype</dir>\n\
 </fontconfig>' > 09-texlive-fonts.conf && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache -sf
