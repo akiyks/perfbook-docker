@@ -1,0 +1,41 @@
+FROM alpine:edge
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 
+# Install rsvg-convert in place of inkscape
+# (inkscape crashes with some of SVG files)
+RUN apk update \
+ && echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories \
+ && apk update \
+ && apk -U add --no-cache make rsvg-convert graphviz ghostscript \
+      perl curl gnuplot groff fig2dev poppler-utils \
+      ca-certificates bash grep sed libpng patch git \
+      coreutils ttf-liberation ttf-dejavu
+
+# texlive of alpine package
+RUN apk update \
+ && apk -U add --no-cache texlive texmf-dist-latexextra texmf-dist-fontsextra \
+      texmf-dist-science texmf-dist-pictures texmf-dist-pstricks texlive-dvi
+RUN apk update \
+ && apk -U add --no-cache texlive-xetex texlive-luatex \
+ && luaotfload-tool --update
+ 
+WORKDIR /opt
+COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
+RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - \
+ && sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand \
+ && cp latexpand-*/latexpand /usr/local/bin \
+ && rm -rf latexpand-* \
+ && mkdir /usr/share/fonts/local && cd /usr/share/fonts/local/ \
+ && ln -s /opt/steel-city-comic.regular.ttf . \
+ && fc-cache -sf
+
+RUN cd /etc/fonts/conf.d/ \
+ && echo $'<?xml version="1.0"?>\n\
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">\n\
+<fontconfig>\n\
+  <dir>/usr/share/texmf-dist/fonts/truetype</dir>\n\
+  <dir>/usr/share/texmf-dist/fonts/opentype</dir>\n\
+</fontconfig>' > 09-texlive-fonts.conf \
+ && cd /opt \
+ && fc-cache -sf
+WORKDIR /work
+CMD /bin/bash
