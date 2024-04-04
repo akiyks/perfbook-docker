@@ -1,0 +1,35 @@
+ARG rel=latest
+FROM docker.io/library/mageia:$rel
+ENV LANG=C
+RUN dnf update -y \
+ && dnf install -y --nodocs \
+      librsvg \
+      graphviz \
+      transfig \
+      make \
+      git \
+      psutils \
+      ghostscript \
+      gnuplot \
+      texlive-dist \
+      texlive-fontsextra \
+      fonts-ttf-freefont \
+      fonts-ttf-liberation \
+      fonts-ttf-libertine \
+      fonts-ttf-dejavu \
+      ca-certificates \
+      coreutils \
+      unzip \
+      time
+ENV LC_ALL=C LANGUAGE=C
+COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
+RUN cd /etc/fonts/conf.d/ \
+ && echo '<?xml version="1.0"?>' > 09-texlive-fonts.conf \
+ && echo '<!DOCTYPE fontconfig SYSTEM "fonts.dtd">' >> 09-texlive-fonts.conf \
+ && echo '<fontconfig>' >> 09-texlive-fonts.conf \
+ && echo '  <dir>/usr/share/texmf-dist/fonts/opentype</dir>' >> 09-texlive-fonts.conf \
+ && echo '</fontconfig>' >> 09-texlive-fonts.conf \
+ && fc-cache -sf
+WORKDIR /opt
+WORKDIR /work
+CMD /bin/bash
