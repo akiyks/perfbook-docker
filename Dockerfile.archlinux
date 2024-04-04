@@ -6,12 +6,10 @@ RUN pacman --noconfirm -Syu \
     graphviz \
     make \
     git \
-    inkscape \
     librsvg \
     ghostscript \
-    fig2dev \
     gnuplot \
-    groff \
+    fig2dev \
     sed \
     grep \
     ttf-liberation \
@@ -24,22 +22,10 @@ RUN pacman --noconfirm -Syu \
     texlive-science \
     texlive-pictures \
     texlive-fontutils \
-    wget \
-    unzip \
- && rm -rf /var/cache/pacman/pkg/
-RUN pacman --noconfirm -Syu \
- && pacman --noconfirm -S \
     texlive-luatex \
     texlive-xetex \
- && rm -rf /var/cache/pacman/pkg/
+ && pacman --noconfirm -Sc
 WORKDIR /opt
-# TeX Live 2023 on Arch Linux has a noisy version of tcolorbox. Upgrade it.
-RUN wget https://mirrors.ctan.org/macros/latex/contrib/tcolorbox.zip \
- && unzip tcolorbox.zip \
- && mkdir -p /usr/local/share/texmf/tex/latex \
- && cd /usr/local/share/texmf/tex/latex \
- && ln -s /opt/tcolorbox . \
- && texhash /usr/local/share/texmf
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/steel-city-comic.regular.ttf
 RUN ln -sf /usr/share/fontconfig/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ \
  && fc-cache -sf
