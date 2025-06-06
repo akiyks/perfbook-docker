@@ -86,18 +86,11 @@ RUN dnf -y update \
       texlive-stix2-otf \
       texlive-xits \
       texlive-libertinus-otf \
+      texlive-gensymb \
+      texlive-tikzfill \
  && dnf install -y --setopt=tsflags=nodocs latexmk \
  && dnf clean all \
  && mktexlsr
-# f38 and later need texlive-gensymb and texlive-tikzfill as well
-RUN if grep -E -q -e 'Fedora Linux (3[89]|4[0-9])' /etc/os-release ; then \
-      dnf update -y \
- &&   dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
-        texlive-gensymb \
-        texlive-tikzfill \
- &&   dnf clean all \
- &&   mktexlsr ; \
-    fi
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
 RUN mkdir -p /etc/fonts/conf.avail \
  && cd /etc/fonts/conf.avail \
