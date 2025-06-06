@@ -20,7 +20,7 @@ RUN mkdir -p /etc/fonts/conf.avail && cd /etc/fonts/conf.avail && \
     ln -sf /etc/fonts/conf.avail/09-texlive-fonts.conf /etc/fonts/conf.d/ && \
     fc-cache -sf
 WORKDIR /opt
-RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - && \
+RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar --no-same-owner --no-same-permissions -xzf - && \
     sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand && \
     cp latexpand-*/latexpand /usr/local/bin
 VOLUME /work
