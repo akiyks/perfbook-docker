@@ -7,6 +7,7 @@ RUN apk -U add --no-cache \
       ca-certificates \
       coreutils \
       curl \
+      fig2dev \
       ghostscript \
       git \
       gnupg \
@@ -30,15 +31,16 @@ RUN apk -U add --no-cache \
 #    tar xf fig2ps-1.5.tar.bz2 && \
 #    cd fig2ps-1.5 && make install && cd .. && \
 #    rm -rf fig2ps-1.5 fig2ps-1.5.tar.bz2
-WORKDIR /opt
-RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.8b.tar.xz \
- && tar xJf fig2dev-3.2.8b.tar.xz \
- && cd fig2dev-3.2.8b \
- &&   ./configure \
- &&   make -j6 \
- &&   make install-strip \
- && cd .. \
- && rm -rf fig2dev-3.2.8b fig2dev-3.2.8b.tar.xz
+# fig2dev is provided since alpine v3.21
+#WORKDIR /opt
+#RUN wget https://sourceforge.net/projects/mcj/files/fig2dev-3.2.9.tar.xz \
+# && tar xJf fig2dev-3.2.9.tar.xz \
+# && cd fig2dev-3.2.9 \
+# &&   ./configure \
+# &&   make -j6 \
+# &&   make install-strip \
+# && cd .. \
+# && rm -rf fig2dev-3.2.9 fig2dev-3.2.9.tar.xz
 ENV TEXLIVE_INSTALL_NO_CONTEXT_CACHE=1
 ENV NOPERLDOC=1
 COPY texlive.alpine.profile /opt/texlive.profile
@@ -117,6 +119,7 @@ RUN tlmgr install \
       noindentafter \
       nowidow \
       parnotes \
+      parskip \
       pdfcol \
       pdfcrop \
       pgf \
@@ -158,7 +161,7 @@ RUN tlmgr install \
  && find /usr/local/texlive/2024/texmf-var/ -name "*.log" -exec rm \{\} +
 WORKDIR /opt
 COPY steel-city-comic.regular.ttf steel-city-comic.regular.ttf
-RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar xfz - \
+RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -o - | tar --no-same-owner --no-same-permissions -xzf - \
  && sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand \
  && cp latexpand-*/latexpand /usr/local/bin \
  && cd /opt \
