@@ -11,6 +11,8 @@
 ARG distro=ubuntu
 ARG rel=latest
 FROM $distro:$rel
+ARG rel
+ENV REL $rel
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 RUN apt-get update \
  && apt-get upgrade -y \
@@ -70,5 +72,14 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
  &&   sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand \
  &&   cp latexpand-*/latexpand /usr/local/bin \
  &&   rm latexpand-v1.3.tar.gz CHECKSUM*
+RUN if [ $REL = "focal" ] ; then \
+      curl https://mirrors.ctan.org/macros/latex/contrib/parskip.zip -L -O \
+ &&   unzip parskip.zip \
+ &&   cd parskip && latex parskip.ins && cd .. \
+ &&   mkdir -p /usr/local/share/texmf/tex/latex/parskip \
+ &&   cp parskip/parskip.sty /usr/local/share/texmf/tex/latex/parskip \
+ &&   texhash /usr/local/share/texmf \
+ &&   rm -rf parskip* \
+ ;  fi
 WORKDIR /work
 CMD /bin/bash
