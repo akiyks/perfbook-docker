@@ -53,6 +53,7 @@ RUN apt-get update \
       texlive-luatex \
       file \
       poppler-utils \
+      perl-doc \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
@@ -105,7 +106,7 @@ RUN if [ $REL = "bionic" ] ; then \
  &&   sha512sum latexpand-v1.3.tar.gz > CHECKSUM \
  &&   echo "2e8030b478a6ea03979cec0e03ca0845f67bc7df607b2eaa58660a35e4216747be21e2a01b8700dffd244a2d5265f08eef60b65c0dbc7fcf5123ba773fb1903d  latexpand-v1.3.tar.gz" > CHECKSUM_EXPECTED \
  &&   cmp CHECKSUM CHECKSUM_EXPECTED \
- &&   tar xfz latexpand-v1.3.tar.gz \
+ &&   tar --no-same-owner --no-same-permissions -xzf latexpand-v1.3.tar.gz \
  &&   sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand \
  &&   cp latexpand-*/latexpand /usr/local/bin \
  &&   rm latexpand-v1.3.tar.gz CHECKSUM* \
