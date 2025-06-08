@@ -44,7 +44,7 @@ RUN curl $tlrepo/install-tl-unx.tar.gz -L -o install-tl-unx.tar.gz \
  && gpg --verify install-tl-unx.tar.gz.sha512.asc \
  && sha512sum install-tl-unx.tar.gz > CHECKSUM \
  && cmp install-tl-unx.tar.gz.sha512 CHECKSUM \
- && tar xfz install-tl-unx.tar.gz \
+ && tar --no-same-owner --no-same-permissions -xzf install-tl-unx.tar.gz \
  && cd install-tl-* \
  && perl install-tl -profile /opt/texlive.profile -repository $tlrepo \
  && cd .. \
@@ -55,17 +55,17 @@ RUN mkdir /tmp/tl-equivs \
 COPY texlive-local /tmp/tl-equivs/texlive-local
 RUN cd /tmp/tl-equivs \
  && equivs-build texlive-local \
- && dpkg -i texlive-local_2024.99999999-1_all.deb
+ && dpkg -i texlive-local_2025.99999999-1_all.deb
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       gnuplot-nox \
       groff \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
-ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2024/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2025/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
 WORKDIR /opt
-ARG gsrevision=10.03.0
-ARG gssubdir=gs10030
+ARG gsrevision=10.05.1
+ARG gssubdir=gs10051
 RUN curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$gssubdir/ghostscript-$gsrevision.tar.gz -L -O \
  && curl https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$gssubdir/SHA512SUMS -L -O \
  && grep -F "ghostscript-$gsrevision.tar.gz" SHA512SUMS > SHA512SUMS-MATCH \
@@ -84,7 +84,7 @@ RUN tlmgr install \
     arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
     epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
     gensymb glossaries glossaries-extra idxlayout mfirstuc multirow \
-    ncctools nextpage nowidow parnotes pdfcol \
+    ncctools nextpage nowidow parnotes parskip pdfcol \
     readarray silence siunitx splitindex tcolorbox tikzfill \
     threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
     xfor xpatch xstring noindentafter forloop \
@@ -92,14 +92,14 @@ RUN tlmgr install \
     float fontspec index latexbug listings newfloat subfig xcolor \
     microtype setspace lineno pgf textcase listofitems \
     multido ragged2e \
-    a2ping epstopdf pdfcrop tex-gyre times txfonts \
+    a2ping epstopdf pdfcrop latexmk tex-gyre times txfonts \
     changepage environ placeins \
     pstricks pst-node pst-eps pst-tools \
     xetex realscripts unicode-math lualatex-math luacolor \
     stix2-otf xits libertinus-fonts tex-gyre-math
 COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
 RUN cd /etc/fonts/conf.d/ \
- && ln -sf /usr/local/texlive/2024/texmf-var/fonts/conf/texlive-fontconfig.conf 09-texlive-fonts.conf \
+ && ln -sf /usr/local/texlive/2025/texmf-var/fonts/conf/texlive-fontconfig.conf 09-texlive-fonts.conf \
  && fc-cache -sf
 WORKDIR /opt
 RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -O \

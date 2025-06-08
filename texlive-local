@@ -3,7 +3,7 @@ Priority: optional
 Standards-Version: 4.1.4
 
 Package: texlive-local
-Version: 2024.99999999-1
+Version: 2025.99999999-1
 Maintainer: Akira Yokosawa <akiyks@gmail.com>
 Provides: chktex, biblatex, biblatex-dw, cm-super, cm-super-minimal, context, 
  dvidvi, dvipng, dvisvgm, feynmf, fragmaster, jadetex, lacheck, latex-beamer, 
@@ -37,4 +37,4 @@ Provides: chktex, biblatex, biblatex-dw, cm-super, cm-super-minimal, context,
  ghostscript
 Depends:
 Architecture: all
-Description: Subset of vanilla TeX Live 2024 for perfbook build.
+Description: Subset of vanilla TeX Live 2025 for perfbook build.
