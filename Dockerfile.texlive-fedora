@@ -1,0 +1,84 @@
+ARG distro=fedora
+ARG rel=latest
+FROM $distro:$rel
+ENV LANG C.UTF-8
+RUN dnf update -y \
+ && dnf install -y --setopt=tsflags=nodocs --setopt=install_weak_deps=False --best \
+      transfig \
+      graphviz \
+      librsvg2-tools \
+      make \
+      git \
+      gawk \
+      gnuplot-minimal \
+      time \
+      file \
+      findutils \
+      diffutils \
+      liberation-mono-fonts \
+      liberation-sans-fonts \
+      dejavu-sans-mono-fonts \
+      dejavu-sans-fonts \
+      curl \
+      wget \
+      gnupg \
+      perl \
+      unzip \
+ && dnf clean all
+WORKDIR /opt
+COPY texlive.profile texlive.profile
+#  https://mirror.ctan.org/systems/texlive/tlnet
+# Alternatives of tlrepo in or near JP
+#  https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
+#  https://ftp.yz.yamagata-u.ac.jp/pub/CTAN/systems/texlive/tlnet
+ARG tlrepo=https://ftp.jaist.ac.jp/pub/CTAN/systems/texlive/tlnet
+RUN curl $tlrepo/install-tl-unx.tar.gz -L -o install-tl-unx.tar.gz \
+ && curl https://tug.org/texlive/files/texlive.asc -L -o texlive.asc \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512 -L -o install-tl-unx.tar.gz.sha512 \
+ && curl $tlrepo/install-tl-unx.tar.gz.sha512.asc -L -o install-tl-unx.tar.gz.sha512.asc \
+ && gpg --import texlive.asc \
+ && gpg --verify install-tl-unx.tar.gz.sha512.asc \
+ && sha512sum install-tl-unx.tar.gz > CHECKSUM \
+ && cmp install-tl-unx.tar.gz.sha512 CHECKSUM \
+ && tar --no-same-owner --no-same-permissions -xzf install-tl-unx.tar.gz \
+ && rm install-tl-unx* \
+ && cd install-tl-* \
+ && perl install-tl -profile /opt/texlive.profile -repository $tlrepo \
+ && cd .. \
+ && rm -rf install-tl* CHECKSUM
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/local/texlive/2025/bin/x86_64-linux:/usr/sbin:/usr/bin:/sbin:/bin
+WORKDIR /opt
+RUN tlmgr install \
+    newtx newtxtt nimbus15 courier courier-scaled inconsolata newtxsf mdsymbol \
+    libertine \
+    arydshln braket cleveref datatool draftwatermark ellipsis enumitem \
+    epigraph fmtcount fontaxes footmisc footnotebackref fvextra \
+    gensymb glossaries glossaries-extra idxlayout mfirstuc multirow \
+    ncctools nextpage nowidow parnotes parskip pdfcol \
+    readarray silence siunitx splitindex tcolorbox tikzfill \
+    threeparttable tocbibind titlesec upquote varwidth verbatimbox was \
+    xfor xpatch xstring noindentafter forloop \
+    booktabs caption etoolbox everysel fancyvrb \
+    float fontspec index latexbug listings newfloat subfig xcolor \
+    microtype setspace lineno pgf textcase listofitems \
+    multido ragged2e \
+    a2ping epstopdf latexmk pdfcrop tex-gyre times txfonts \
+    changepage environ placeins \
+    pstricks pst-node pst-eps pst-tools \
+    xetex realscripts unicode-math lualatex-math luacolor \
+    stix2-otf xits libertinus-fonts tex-gyre-math gnu-freefont
+COPY steel-city-comic.regular.ttf /usr/local/share/fonts/
+RUN cd /etc/fonts/conf.d/ \
+ && ln -sf /usr/local/texlive/2025/texmf-var/fonts/conf/texlive-fontconfig.conf 09-texlive-fonts.conf \
+ && fc-cache -sf
+WORKDIR /opt
+RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.tar.gz -L -O \
+ && sha512sum latexpand-v1.3.tar.gz > CHECKSUM \
+ && echo "2e8030b478a6ea03979cec0e03ca0845f67bc7df607b2eaa58660a35e4216747be21e2a01b8700dffd244a2d5265f08eef60b65c0dbc7fcf5123ba773fb1903d  latexpand-v1.3.tar.gz" > CHECKSUM_EXPECTED \
+ && cmp CHECKSUM CHECKSUM_EXPECTED \
+ && tar --no-same-owner --no-same-permissions -xzf latexpand-v1.3.tar.gz \
+ && sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand \
+ && cp latexpand-*/latexpand /usr/local/bin \
+ && rm -f latexpand-*.tar.gz CHECKSUM*
+WORKDIR /work
+CMD /bin/bash
