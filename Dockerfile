@@ -78,17 +78,17 @@ RUN if [ $REL = "focal" -o $REL = "buster" -o $REL = "buster-slim" ] ; then \
  &&   cd parskip && latex parskip.ins && cd .. \
  &&   mkdir -p /usr/local/share/texmf/tex/latex/parskip \
  &&   cp parskip/parskip.sty /usr/local/share/texmf/tex/latex/parskip \
- &&   texhash /usr/local/share/texmf \
  &&   rm -rf parskip* \
- ;  fi
-RUN if [ $REL = "buster" -o $REL = "buster-slim" ] ; then \
-      curl https://mirrors.ctan.org/macros/latex/contrib/epigraph.zip -L -O \
+ &&   curl https://mirrors.ctan.org/macros/latex/contrib/epigraph.zip -L -O \
  &&   unzip epigraph.zip \
  &&   cd epigraph && latex epigraph.ins && cd .. \
  &&   mkdir -p /usr/local/share/texmf/tex/latex/epigraph \
  &&   cp epigraph/epigraph.sty /usr/local/share/texmf/tex/latex/epigraph \
  &&   rm -rf epigraph* \
- &&   curl https://mirrors.ctan.org/macros/latex/contrib/mfirstuc.zip -L -O \
+ &&   texhash /usr/local/share/texmf \
+ ;  fi
+RUN if [ $REL = "buster" -o $REL = "buster-slim" ] ; then \
+      curl https://mirrors.ctan.org/macros/latex/contrib/mfirstuc.zip -L -O \
  &&   unzip mfirstuc.zip \
  &&   cd mfirstuc && latex mfirstuc.ins && cd .. \
  &&   mkdir -p /usr/local/share/texmf/tex/latex/mfirstuc \
