@@ -72,7 +72,7 @@ RUN curl https://gitlab.com/latexpand/latexpand/-/archive/v1.3/latexpand-v1.3.ta
  &&   sed -i -e 's/@LATEXPAND_VERSION@/v1.3/' latexpand-*/latexpand \
  &&   cp latexpand-*/latexpand /usr/local/bin \
  &&   rm latexpand-v1.3.tar.gz CHECKSUM*
-RUN if [ $REL = "focal" -o $REL = "buster" -o $REL = "buster-slim" ] ; then \
+RUN if [ $REL = "focal" -o $REL = "buster" -o $REL = "buster-slim" -o $REL = "bionic" ] ; then \
       curl https://mirrors.ctan.org/macros/latex/contrib/parskip.zip -L -O \
  &&   unzip parskip.zip \
  &&   cd parskip && latex parskip.ins && cd .. \
@@ -87,7 +87,7 @@ RUN if [ $REL = "focal" -o $REL = "buster" -o $REL = "buster-slim" ] ; then \
  &&   rm -rf epigraph* \
  &&   texhash /usr/local/share/texmf \
  ;  fi
-RUN if [ $REL = "buster" -o $REL = "buster-slim" ] ; then \
+RUN if [ $REL = "buster" -o $REL = "buster-slim" -o $REL = "bionic" ] ; then \
       curl https://mirrors.ctan.org/macros/latex/contrib/mfirstuc.zip -L -O \
  &&   unzip mfirstuc.zip \
  &&   cd mfirstuc && latex mfirstuc.ins && cd .. \
@@ -115,6 +115,15 @@ RUN if [ $REL = "buster" -o $REL = "buster-slim" ] ; then \
  &&   cd .. \
  &&   texhash /usr/local/share/texmf \
  &&   rm -rf glossaries* \
+ ;  fi
+RUN if [ $REL = "bionic" ] ; then \
+      curl https://mirrors.ctan.org/macros/latex/contrib/cleveref.zip -L -O \
+ &&   unzip cleveref.zip \
+ &&   cd cleveref && latex cleveref.ins && cd .. \
+ &&   mkdir -p /usr/local/share/texmf/tex/latex/cleveref \
+ &&   cp cleveref/cleveref.sty /usr/local/share/texmf/tex/latex/cleveref \
+ &&   rm -rf cleveref* \
+ &&   texhash /usr/local/share/texmf \
  ;  fi
 WORKDIR /work
 CMD /bin/bash
