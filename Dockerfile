@@ -125,5 +125,15 @@ RUN if [ $REL = "bionic" ] ; then \
  &&   rm -rf cleveref* \
  &&   texhash /usr/local/share/texmf \
  ;  fi
+RUN if [ $REL = "plucky" -o $REL = "questing" -o $REL = "trixie" -o $REL = "trixie-slim" ]; then \
+      curl https://github.com/gpoore/fvextra/archive/refs/tags/v1.10.0.zip -L -O \
+ &&   unzip v1.10.0.zip \
+ &&   cd fvextra-1.10.0/fvextra \
+ &&   mkdir -p /usr/local/share/texmf/tex/latex/fvextra/ \
+ &&   cp fvextra.sty /usr/local/share/texmf/tex/latex/fvextra/ \
+ &&   cd ../.. \
+ &&   texhash /usr/local/share/texmf \
+ &&   rm -rf v1.10.0.zip fvextra-1.10.0 \
+ ;  fi
 WORKDIR /work
 CMD /bin/bash
